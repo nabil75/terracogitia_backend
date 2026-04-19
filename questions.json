@@ -1,0 +1,2366 @@
+[
+  {
+    "libelle": "Quelle est la formule de l'aire d'un cercle ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["πr", "2πr", "πr²", "2πr²"]
+  },
+  {
+    "libelle": "Résolvez l'équation : 2x + 3 = 7",
+    "type": "ouverte",
+    "id_subtheme": 1,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la valeur de x dans l'équation 3x = 15 ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["3", "5", "7", "9"]
+  },
+  {
+    "libelle": "Quel est le théorème qui relie les côtés d'un triangle rectangle ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["Théorème de Pythagore", "Théorème de Thalès", "Théorème de Fermat", "Théorème de Gauss"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une fonction affine ?",
+    "type": "ouverte",
+    "id_subtheme": 1,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la dérivée de f(x) = x² ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["2x", "x", "2", "0"]
+  },
+  {
+    "libelle": "Quelle est la solution de l'inéquation 3x - 5 > 1 ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["x > 2", "x < 2", "x > 6", "x < 6"]
+  },
+  {
+    "libelle": "Quelle est la probabilité de tirer un as dans un jeu de 52 cartes ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["1/13", "1/52", "4/13", "4/52"]
+  },
+  {
+    "libelle": "Quelle est la médiane de la série : 3, 5, 7, 9, 11 ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["5", "7", "9", "11"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un nombre premier ?",
+    "type": "ouverte",
+    "id_subtheme": 1,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la somme des angles d'un triangle ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["90°", "180°", "270°", "360°"]
+  },
+  {
+    "libelle": "Quelle est la racine carrée de 144 ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["10", "12", "14", "16"]
+  },
+  {
+    "libelle": "Quelle est la formule de la circonférence d'un cercle ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["πr", "2πr", "πr²", "2πr²"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une équation du second degré ?",
+    "type": "ouverte",
+    "id_subtheme": 1,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la valeur de π (pi) arrondie à deux décimales ?",
+    "type": "fermée unique",
+    "id_subtheme": 1,
+    "options": ["3.12", "3.14", "3.16", "3.18"]
+  },
+  {
+    "libelle": "Quelle est l'unité de mesure de la force dans le système international ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["Newton", "Joule", "Watt", "Pascal"]
+  },
+  {
+    "libelle": "Quelle est la formule de l'énergie cinétique ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["E = mc²", "E = 1/2 mv²", "E = mgh", "E = Fd"]
+  },
+  {
+    "libelle": "Qu'est-ce que la loi d'Ohm ?",
+    "type": "ouverte",
+    "id_subtheme": 2,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le pH d'une solution neutre ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["0", "7", "14", "1"]
+  },
+  {
+    "libelle": "Quelle est la charge électrique d'un électron ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["+1.6 x 10^-19 C", "-1.6 x 10^-19 C", "0 C", "+3.2 x 10^-19 C"]
+  },
+  {
+    "libelle": "Qu'est-ce que la photosynthèse ?",
+    "type": "ouverte",
+    "id_subtheme": 2,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le symbole chimique de l'or ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["Au", "Ag", "Fe", "Cu"]
+  },
+  {
+    "libelle": "Quelle est la température d'ébullition de l'eau en degrés Celsius ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["0°C", "50°C", "100°C", "150°C"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un acide selon la théorie de Brønsted-Lowry ?",
+    "type": "ouverte",
+    "id_subtheme": 2,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la formule chimique de l'eau ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["H2O", "CO2", "O2", "NaCl"]
+  },
+  {
+    "libelle": "Qu'est-ce que la gravité ?",
+    "type": "ouverte",
+    "id_subtheme": 2,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la vitesse de la lumière dans le vide ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["300 000 km/s", "150 000 km/s", "450 000 km/s", "600 000 km/s"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une réaction exothermique ?",
+    "type": "ouverte",
+    "id_subtheme": 2,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le numéro atomique de l'oxygène ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["6", "7", "8", "9"]
+  },
+  {
+    "libelle": "Qu'est-ce que la pression atmosphérique ?",
+    "type": "ouverte",
+    "id_subtheme": 2,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est l'unité de mesure de la puissance électrique ?",
+    "type": "fermée unique",
+    "id_subtheme": 2,
+    "options": ["Ampère", "Volt", "Watt", "Ohm"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'ADN ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des mitochondries dans une cellule ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce que la photosynthèse ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'organe principal du système nerveux central ?",
+    "type": "fermée unique",
+    "id_subtheme": 3,
+    "options": ["Cœur", "Cerveau", "Foie", "Poumon"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un écosystème ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la fonction principale des globules rouges ?",
+    "type": "fermée unique",
+    "id_subtheme": 3,
+    "options": ["Transporter l'oxygène", "Défendre contre les infections", "Coaguler le sang", "Produire des hormones"]
+  },
+  {
+    "libelle": "Qu'est-ce que la biodiversité ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le processus par lequel les plantes produisent de la nourriture ?",
+    "type": "fermée unique",
+    "id_subtheme": 3,
+    "options": ["Respiration", "Photosynthèse", "Fermentation", "Digestion"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un gène ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des ribosomes dans une cellule ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce que la sélection naturelle ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'organe responsable de la production d'insuline ?",
+    "type": "fermée unique",
+    "id_subtheme": 3,
+    "options": ["Foie", "Pancréas", "Rate", "Vésicule biliaire"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un neurone ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la fonction principale des reins ?",
+    "type": "fermée unique",
+    "id_subtheme": 3,
+    "options": ["Produire des hormones", "Filtrer le sang", "Stocker les nutriments", "Produire des enzymes"]
+  },
+  {
+    "libelle": "Qu'est-ce que la symbiose ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des lymphocytes dans le système immunitaire ?",
+    "type": "ouverte",
+    "id_subtheme": 3,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce qu'un algorithme ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Quel langage de programmation est souvent utilisé pour le développement web front-end ?",
+    "type": "fermée unique",
+    "id_subtheme": 4,
+    "options": ["Python", "Java", "JavaScript", "C++"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une base de données ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un pare-feu (firewall) en cybersécurité ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce que l'intelligence artificielle ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Quel protocole est utilisé pour sécuriser les communications sur Internet ?",
+    "type": "fermée unique",
+    "id_subtheme": 4,
+    "options": ["FTP", "HTTP", "HTTPS", "SMTP"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une boucle 'for' en programmation ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un compilateur ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce qu'une attaque par déni de service (DDoS) ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Quel langage est souvent utilisé pour l'analyse de données ?",
+    "type": "fermée unique",
+    "id_subtheme": 4,
+    "options": ["HTML", "CSS", "Python", "SQL"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un framework en développement logiciel ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'une clé primaire dans une base de données ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce que le machine learning ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un système d'exploitation ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce qu'une API ?",
+    "type": "ouverte",
+    "id_subtheme": 4,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le langage de balisage utilisé pour créer des pages web ?",
+    "type": "fermée unique",
+    "id_subtheme": 4,
+    "options": ["Python", "Java", "HTML", "C#"]
+  },
+  {
+    "libelle": "En quelle année a commencé la Première Guerre mondiale ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["1912", "1914", "1916", "1918"]
+  },
+  {
+    "libelle": "Qui était le premier empereur romain ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["Jules César", "Auguste", "Néron", "Trajan"]
+  },
+  {
+    "libelle": "Quelle était la capitale de l'Empire byzantin ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["Rome", "Athènes", "Constantinople", "Alexandrie"]
+  },
+  {
+    "libelle": "Qu'est-ce que la Renaissance ?",
+    "type": "ouverte",
+    "id_subtheme": 5,
+    "options": []
+  },
+  {
+    "libelle": "Qui a découvert l'Amérique en 1492 ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["Magellan", "Colomb", "Vespucci", "Cook"]
+  },
+  {
+    "libelle": "Quelle était la cause principale de la Révolution française ?",
+    "type": "ouverte",
+    "id_subtheme": 5,
+    "options": []
+  },
+  {
+    "libelle": "Qui était le leader de l'URSS pendant la Seconde Guerre mondiale ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["Lénine", "Staline", "Trotski", "Khrouchtchev"]
+  },
+  {
+    "libelle": "Qu'est-ce que la Guerre froide ?",
+    "type": "ouverte",
+    "id_subtheme": 5,
+    "options": []
+  },
+  {
+    "libelle": "En quelle année est tombé le mur de Berlin ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["1987", "1989", "1991", "1993"]
+  },
+  {
+    "libelle": "Qui était Cléopâtre ?",
+    "type": "ouverte",
+    "id_subtheme": 5,
+    "options": []
+  },
+  {
+    "libelle": "Quelle civilisation a construit les pyramides de Gizeh ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["Grecque", "Romaine", "Égyptienne", "Mésopotamienne"]
+  },
+  {
+    "libelle": "Qu'est-ce que le féodalisme ?",
+    "type": "ouverte",
+    "id_subtheme": 5,
+    "options": []
+  },
+  {
+    "libelle": "Qui a écrit 'Le Capital' ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["Marx", "Engels", "Lénine", "Trotski"]
+  },
+  {
+    "libelle": "Quelle était la principale cause de la Première Guerre mondiale ?",
+    "type": "ouverte",
+    "id_subtheme": 5,
+    "options": []
+  },
+  {
+    "libelle": "Qui était Napoléon Bonaparte ?",
+    "type": "ouverte",
+    "id_subtheme": 5,
+    "options": []
+  },
+  {
+    "libelle": "Quelle était la capitale de l'Empire ottoman ?",
+    "type": "fermée unique",
+    "id_subtheme": 5,
+    "options": ["Le Caire", "Bagdad", "Istanbul", "Damascus"]
+  },
+  {
+    "libelle": "Qu'est-ce que la géopolitique ?",
+    "type": "ouverte",
+    "id_subtheme": 6,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le plus grand désert du monde ?",
+    "type": "fermée unique",
+    "id_subtheme": 6,
+    "options": ["Désert du Sahara", "Désert d'Arabie", "Désert de Gobi", "Désert d'Antarctique"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'urbanisation ?",
+    "type": "ouverte",
+    "id_subtheme": 6,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le plus long fleuve du monde ?",
+    "type": "fermée unique",
+    "id_subtheme": 6,
+    "options": ["Nil", "Amazone", "Yangtsé", "Mississippi"]
+  },
+  {
+    "libelle": "Qu'est-ce que le réchauffement climatique ?",
+    "type": "ouverte",
+    "id_subtheme": 6,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le pays le plus peuplé du monde ?",
+    "type": "fermée unique",
+    "id_subtheme": 6,
+    "options": ["Inde", "Chine", "États-Unis", "Indonésie"]
+  },
+  {
+    "libelle": "Qu'est-ce que la mondialisation ?",
+    "type": "ouverte",
+    "id_subtheme": 6,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le plus haut sommet du monde ?",
+    "type": "fermée unique",
+    "id_subtheme": 6,
+    "options": ["K2", "Mont Everest", "Mont Blanc", "Denali"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un État-nation ?",
+    "type": "ouverte",
+    "id_subtheme": 6,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le plus grand océan du monde ?",
+    "type": "fermée unique",
+    "id_subtheme": 6,
+    "options": ["Océan Atlantique", "Océan Indien", "Océan Pacifique", "Océan Arctique"]
+  },
+  {
+    "libelle": "Qu'est-ce que la démographie ?",
+    "type": "ouverte",
+    "id_subtheme": 6,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le continent le plus grand ?",
+    "type": "fermée unique",
+    "id_subtheme": 6,
+    "options": ["Afrique", "Asie", "Amérique", "Europe"]
+  },
+  {
+    "libelle": "Qu'est-ce que le développement durable ?",
+    "type": "ouverte",
+    "id_subtheme": 6,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le pays avec la plus grande superficie ?",
+    "type": "fermée unique",
+    "id_subtheme": 6,
+    "options": ["Canada", "Russie", "Chine", "États-Unis"]
+  },
+  {
+    "libelle": "Qu'est-ce que la biodiversité ?",
+    "type": "ouverte",
+    "id_subtheme": 6,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le plus grand lac d'eau douce du monde ?",
+    "type": "fermée unique",
+    "id_subtheme": 6,
+    "options": ["Lac Supérieur", "Lac Victoria", "Lac Baïkal", "Lac Tanganyika"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'éthique ?",
+    "type": "ouverte",
+    "id_subtheme": 7,
+    "options": []
+  },
+  {
+    "libelle": "Qui est considéré comme le père de la philosophie occidentale ?",
+    "type": "fermée unique",
+    "id_subtheme": 7,
+    "options": ["Platon", "Aristote", "Socrate", "Descartes"]
+  },
+  {
+    "libelle": "Qu'est-ce que le dualisme cartésien ?",
+    "type": "ouverte",
+    "id_subtheme": 7,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce que l'existentialisme ?",
+    "type": "ouverte",
+    "id_subtheme": 7,
+    "options": []
+  },
+  {
+    "libelle": "Qui a écrit 'Le Mythe de Sisyphe' ?",
+    "type": "fermée unique",
+    "id_subtheme": 7,
+    "options": ["Sartre", "Camus", "Nietzsche", "Kierkegaard"]
+  },
+  {
+    "libelle": "Qu'est-ce que la dialectique ?",
+    "type": "ouverte",
+    "id_subtheme": 7,
+    "options": []
+  },
+  {
+    "libelle": "Qui a dit 'Je pense, donc je suis' ?",
+    "type": "fermée unique",
+    "id_subtheme": 7,
+    "options": ["Platon", "Aristote", "Descartes", "Kant"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'utilitarisme ?",
+    "type": "ouverte",
+    "id_subtheme": 7,
+    "options": []
+  },
+  {
+    "libelle": "Qui est l'auteur de 'Ainsi parlait Zarathoustra' ?",
+    "type": "fermée unique",
+    "id_subtheme": 7,
+    "options": ["Schopenhauer", "Nietzsche", "Hegel", "Marx"]
+  },
+  {
+    "libelle": "Qu'est-ce que la phénoménologie ?",
+    "type": "ouverte",
+    "id_subtheme": 7,
+    "options": []
+  },
+  {
+    "libelle": "Qui a écrit 'La République' ?",
+    "type": "fermée unique",
+    "id_subtheme": 7,
+    "options": ["Platon", "Aristote", "Socrate", "Épicure"]
+  },
+  {
+    "libelle": "Qu'est-ce que le stoïcisme ?",
+    "type": "ouverte",
+    "id_subtheme": 7,
+    "options": []
+  },
+  {
+    "libelle": "Qui est l'auteur de 'Critique de la raison pure' ?",
+    "type": "fermée unique",
+    "id_subtheme": 7,
+    "options": ["Hegel", "Kant", "Fichte", "Schelling"]
+  },
+  {
+    "libelle": "Qu'est-ce que le nihilisme ?",
+    "type": "ouverte",
+    "id_subtheme": 7,
+    "options": []
+  },
+  {
+    "libelle": "Qui a écrit 'L'Éthique' ?",
+    "type": "fermée unique",
+    "id_subtheme": 7,
+    "options": ["Spinoza", "Descartes", "Leibniz", "Locke"]
+  },
+  {
+    "libelle": "Qui est l'auteur de 'Madame Bovary' ?",
+    "type": "fermée unique",
+    "id_subtheme": 8,
+    "options": ["Balzac", "Flaubert", "Zola", "Hugo"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un sonnet ?",
+    "type": "ouverte",
+    "id_subtheme": 8,
+    "options": []
+  },
+  {
+    "libelle": "Qui a écrit 'Les Misérables' ?",
+    "type": "fermée unique",
+    "id_subtheme": 8,
+    "options": ["Balzac", "Flaubert", "Zola", "Hugo"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une métaphore ?",
+    "type": "ouverte",
+    "id_subtheme": 8,
+    "options": []
+  },
+  {
+    "libelle": "Qui est l'auteur de 'À la recherche du temps perdu' ?",
+    "type": "fermée unique",
+    "id_subtheme": 8,
+    "options": ["Proust", "Sartre", "Camus", "Gide"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un alexandrin ?",
+    "type": "ouverte",
+    "id_subtheme": 8,
+    "options": []
+  },
+  {
+    "libelle": "Qui a écrit 'Le Rouge et le Noir' ?",
+    "type": "fermée unique",
+    "id_subtheme": 8,
+    "options": ["Balzac", "Stendhal", "Flaubert", "Zola"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une allitération ?",
+    "type": "ouverte",
+    "id_subtheme": 8,
+    "options": []
+  },
+  {
+    "libelle": "Qui est l'auteur de 'Les Fleurs du Mal' ?",
+    "type": "fermée unique",
+    "id_subtheme": 8,
+    "options": ["Verlaine", "Rimbaud", "Baudelaire", "Mallarmé"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un oxymore ?",
+    "type": "ouverte",
+    "id_subtheme": 8,
+    "options": []
+  },
+  {
+    "libelle": "Qui a écrit 'Roméo et Juliette' ?",
+    "type": "fermée unique",
+    "id_subtheme": 8,
+    "options": ["Shakespeare", "Molière", "Racine", "Corneille"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un quatrain ?",
+    "type": "ouverte",
+    "id_subtheme": 8,
+    "options": []
+  },
+  {
+    "libelle": "Qui a écrit 'Les Essais' ?",
+    "type": "fermée unique",
+    "id_subtheme": 8,
+    "options": ["Montaigne", "Rabelais", "Descartes", "Pascal"]
+  },
+  {
+    "libelle": "Quelle est la langue la plus parlée dans le monde ?",
+    "type": "fermée unique",
+    "id_subtheme": 9,
+    "options": ["Anglais", "Espagnol", "Mandarin", "Hindi"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un pronom personnel ?",
+    "type": "ouverte",
+    "id_subtheme": 9,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le pays où l'espagnol est la langue officielle ?",
+    "type": "fermée multiple",
+    "id_subtheme": 9,
+    "options": ["Espagne", "Mexique", "Argentine", "Portugal", "Brésil"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un verbe irrégulier ?",
+    "type": "ouverte",
+    "id_subtheme": 9,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la langue officielle du Brésil ?",
+    "type": "fermée unique",
+    "id_subtheme": 9,
+    "options": ["Espagnol", "Portugais", "Français", "Anglais"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un adverbe ?",
+    "type": "ouverte",
+    "id_subtheme": 9,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la langue la plus parlée en Inde ?",
+    "type": "fermée unique",
+    "id_subtheme": 9,
+    "options": ["Anglais", "Hindi", "Bengali", "Ourdou"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une conjonction ?",
+    "type": "ouverte",
+    "id_subtheme": 9,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le pays où l'allemand est la langue officielle ?",
+    "type": "fermée multiple",
+    "id_subtheme": 9,
+    "options": ["Allemagne", "Autriche", "Suisse", "Belgique", "Pays-Bas"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un nom commun ?",
+    "type": "ouverte",
+    "id_subtheme": 9,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la langue officielle de la Chine ?",
+    "type": "fermée unique",
+    "id_subtheme": 9,
+    "options": ["Mandarin", "Cantonais", "Shanghaïen", "Hokkien"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un article défini ?",
+    "type": "ouverte",
+    "id_subtheme": 9,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le pays où le français est une langue officielle ?",
+    "type": "fermée multiple",
+    "id_subtheme": 9,
+    "options": ["France", "Canada", "Belgique", "Suisse", "Allemagne"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un adjectif ?",
+    "type": "ouverte",
+    "id_subtheme": 9,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la langue officielle du Japon ?",
+    "type": "fermée unique",
+    "id_subtheme": 9,
+    "options": ["Chinois", "Coréen", "Japonais", "Anglais"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une préposition ?",
+    "type": "ouverte",
+    "id_subtheme": 9,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la langue ancienne parlée dans la Rome antique ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Grec", "Latin", "Hébreu", "Araméen"]
+  },
+  {
+    "libelle": "Qui est l'auteur de 'L'Énéide' ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Homère", "Virgile", "Ovide", "Cicéron"]
+  },
+  {
+    "libelle": "Qu'est-ce que la déclinaison en latin ?",
+    "type": "ouverte",
+    "id_subtheme": 10,
+    "options": []
+  },
+  {
+    "libelle": "Quelle est la langue de l'Iliade et l'Odyssée ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Latin", "Grec ancien", "Hébreu", "Sanskrit"]
+  },
+  {
+    "libelle": "Qui est le dieu de la guerre dans la mythologie grecque ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Zeus", "Poséidon", "Arès", "Apollon"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un participe passé en latin ?",
+    "type": "ouverte",
+    "id_subtheme": 10,
+    "options": []
+  },
+  {
+    "libelle": "Qui est l'auteur de 'La Guerre des Gaules' ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Jules César", "Auguste", "Tacite", "Suétone"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'alphabet grec ?",
+    "type": "ouverte",
+    "id_subtheme": 10,
+    "options": []
+  },
+  {
+    "libelle": "Qui est le dieu des enfers dans la mythologie romaine ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Jupiter", "Neptune", "Pluton", "Mars"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un cas en latin ?",
+    "type": "ouverte",
+    "id_subtheme": 10,
+    "options": []
+  },
+  {
+    "libelle": "Qui est l'auteur des 'Métamorphoses' ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Virgile", "Ovide", "Horace", "Catulle"]
+  },
+  {
+    "libelle": "Qu'est-ce que la mythologie grecque ?",
+    "type": "ouverte",
+    "id_subtheme": 10,
+    "options": []
+  },
+  {
+    "libelle": "Qui est le dieu de l'amour dans la mythologie romaine ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Jupiter", "Mars", "Vénus", "Mercure"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un verbe déponent en latin ?",
+    "type": "ouverte",
+    "id_subtheme": 10,
+    "options": []
+  },
+  {
+    "libelle": "Qui est l'auteur de 'L'Art d'aimer' ?",
+    "type": "fermée unique",
+    "id_subtheme": 10,
+    "options": ["Virgile", "Ovide", "Horace", "Sénèque"]
+  },
+  {
+    "libelle": "Qu'est-ce que la communication non verbale ?",
+    "type": "ouverte",
+    "id_subtheme": 11,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les éléments clés d'une présentation efficace ?",
+    "type": "fermée multiple",
+    "id_subtheme": 11,
+    "options": ["Clarté", "Contact visuel", "Gestes", "Volume de la voix", "Tenue vestimentaire"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un argumentaire ?",
+    "type": "ouverte",
+    "id_subtheme": 11,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types de communication ?",
+    "type": "fermée multiple",
+    "id_subtheme": 11,
+    "options": ["Verbale", "Non verbale", "Écrite", "Visuelle", "Auditive"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'écoute active ?",
+    "type": "ouverte",
+    "id_subtheme": 11,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les éléments d'une lettre formelle ?",
+    "type": "fermée multiple",
+    "id_subtheme": 11,
+    "options": ["En-tête", "Objet", "Corps", "Signature", "Post-scriptum"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un feedback constructif ?",
+    "type": "ouverte",
+    "id_subtheme": 11,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les principes de la communication efficace ?",
+    "type": "fermée multiple",
+    "id_subtheme": 11,
+    "options": ["Précision", "Cohérence", "Concision", "Courtoisie", "Confidentialité"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un débat ?",
+    "type": "ouverte",
+    "id_subtheme": 11,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les outils de communication digitale ?",
+    "type": "fermée multiple",
+    "id_subtheme": 11,
+    "options": ["Email", "Réseaux sociaux", "Blog", "Chat", "Téléphone"]
+  },
+  {
+    "libelle": "Qu'est-ce que la rhétorique ?",
+    "type": "ouverte",
+    "id_subtheme": 11,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types de discours ?",
+    "type": "fermée multiple",
+    "id_subtheme": 11,
+    "options": ["Narratif", "Descriptif", "Explicatif", "Argumentatif", "Injonctif"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une réunion efficace ?",
+    "type": "ouverte",
+    "id_subtheme": 11,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les éléments d'un CV ?",
+    "type": "fermée multiple",
+    "id_subtheme": 11,
+    "options": ["Coordonnées", "Expérience professionnelle", "Formation", "Compétences", "Loisirs"]
+  },
+  {
+    "libelle": "Qu'est-ce que la négociation ?",
+    "type": "ouverte",
+    "id_subtheme": 11,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les canaux de communication interne dans une entreprise ?",
+    "type": "fermée multiple",
+    "id_subtheme": 11,
+    "options": ["Email", "Intranet", "Réunions", "Affichage", "Réseaux sociaux"]
+  },
+  {
+    "libelle": "Qui a peint 'La Joconde' ?",
+    "type": "fermée unique",
+    "id_subtheme": 12,
+    "options": ["Michel-Ange", "Léonard de Vinci", "Raphaël", "Donatello"]
+  },
+  {
+    "libelle": "Qu'est-ce que la perspective en dessin ?",
+    "type": "ouverte",
+    "id_subtheme": 12,
+    "options": []
+  },
+  {
+    "libelle": "Quel mouvement artistique est associé à Salvador Dalí ?",
+    "type": "fermée unique",
+    "id_subtheme": 12,
+    "options": ["Cubisme", "Surréalisme", "Impressionnisme", "Expressionnisme"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une nature morte ?",
+    "type": "ouverte",
+    "id_subtheme": 12,
+    "options": []
+  },
+  {
+    "libelle": "Qui est l'auteur de 'La Nuit étoilée' ?",
+    "type": "fermée unique",
+    "id_subtheme": 12,
+    "options": ["Van Gogh", "Monet", "Renoir", "Cézanne"]
+  },
+  {
+    "libelle": "Qu'est-ce que le pop art ?",
+    "type": "ouverte",
+    "id_subtheme": 12,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le musée le plus visité au monde ?",
+    "type": "fermée unique",
+    "id_subtheme": 12,
+    "options": ["Louvre", "British Museum", "Metropolitan Museum of Art", "Musée de l'Ermitage"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une fresque ?",
+    "type": "ouverte",
+    "id_subtheme": 12,
+    "options": []
+  },
+  {
+    "libelle": "Qui a sculpté 'David' ?",
+    "type": "fermée unique",
+    "id_subtheme": 12,
+    "options": ["Michel-Ange", "Donatello", "Bernini", "Cellini"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'art abstrait ?",
+    "type": "ouverte",
+    "id_subtheme": 12,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le courant artistique de Pablo Picasso ?",
+    "type": "fermée unique",
+    "id_subtheme": 12,
+    "options": ["Impressionnisme", "Cubisme", "Surréalisme", "Fauvisme"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une estampe ?",
+    "type": "ouverte",
+    "id_subtheme": 12,
+    "options": []
+  },
+  {
+    "libelle": "Qui a peint 'Le Cri' ?",
+    "type": "fermée unique",
+    "id_subtheme": 12,
+    "options": ["Munch", "Kandinsky", "Klimt", "Schiele"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'art contemporain ?",
+    "type": "ouverte",
+    "id_subtheme": 12,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le mouvement artistique de Claude Monet ?",
+    "type": "fermée unique",
+    "id_subtheme": 12,
+    "options": ["Cubisme", "Impressionnisme", "Surréalisme", "Expressionnisme"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une installation artistique ?",
+    "type": "ouverte",
+    "id_subtheme": 12,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce qu'une gamme musicale ?",
+    "type": "ouverte",
+    "id_subtheme": 13,
+    "options": []
+  },
+  {
+    "libelle": "Quel instrument est connu comme le 'roi des instruments' ?",
+    "type": "fermée unique",
+    "id_subtheme": 13,
+    "options": ["Piano", "Violon", "Orgue", "Guitare"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un tempo en musique ?",
+    "type": "ouverte",
+    "id_subtheme": 13,
+    "options": []
+  },
+  {
+    "libelle": "Qui a composé 'La Flûte enchantée' ?",
+    "type": "fermée unique",
+    "id_subtheme": 13,
+    "options": ["Bach", "Mozart", "Beethoven", "Haydn"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une symphonie ?",
+    "type": "ouverte",
+    "id_subtheme": 13,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'instrument national du Japon ?",
+    "type": "fermée unique",
+    "id_subtheme": 13,
+    "options": ["Koto", "Shamisen", "Taiko", "Shakuhachi"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un accord en musique ?",
+    "type": "ouverte",
+    "id_subtheme": 13,
+    "options": []
+  },
+  {
+    "libelle": "Qui a composé 'Le Lac des cygnes' ?",
+    "type": "fermée unique",
+    "id_subtheme": 13,
+    "options": ["Tchaïkovski", "Stravinsky", "Rimski-Korsakov", "Moussorgski"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une mesure en musique ?",
+    "type": "ouverte",
+    "id_subtheme": 13,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'instrument à cordes le plus grave ?",
+    "type": "fermée unique",
+    "id_subtheme": 13,
+    "options": ["Violon", "Alto", "Violoncelle", "Contrebasse"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un opéra ?",
+    "type": "ouverte",
+    "id_subtheme": 13,
+    "options": []
+  },
+  {
+    "libelle": "Qui a composé 'La Neuvième Symphonie' ?",
+    "type": "fermée unique",
+    "id_subtheme": 13,
+    "options": ["Mozart", "Beethoven", "Bach", "Haydn"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une mélodie ?",
+    "type": "ouverte",
+    "id_subtheme": 13,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'instrument à vent le plus aigu ?",
+    "type": "fermée unique",
+    "id_subtheme": 13,
+    "options": ["Flûte", "Clarinette", "Trompette", "Piccolo"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un quatuor à cordes ?",
+    "type": "ouverte",
+    "id_subtheme": 13,
+    "options": []
+  },
+  {
+    "libelle": "Qui a composé 'Le Messie' ?",
+    "type": "fermée unique",
+    "id_subtheme": 13,
+    "options": ["Bach", "Handel", "Vivaldi", "Telemann"]
+  },
+  {
+    "libelle": "Qui a réalisé 'Citizen Kane' ?",
+    "type": "fermée unique",
+    "id_subtheme": 14,
+    "options": ["Alfred Hitchcock", "Orson Welles", "Steven Spielberg", "Martin Scorsese"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un plan séquence ?",
+    "type": "ouverte",
+    "id_subtheme": 14,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le premier film parlant ?",
+    "type": "fermée unique",
+    "id_subtheme": 14,
+    "options": ["Le Chanteur de jazz", "Autant en emporte le vent", "Casablanca", "Psychose"]
+  },
+  {
+    "libelle": "Qu'est-ce que le montage cinématographique ?",
+    "type": "ouverte",
+    "id_subtheme": 14,
+    "options": []
+  },
+  {
+    "libelle": "Qui a réalisé 'Pulp Fiction' ?",
+    "type": "fermée unique",
+    "id_subtheme": 14,
+    "options": ["Quentin Tarantino", "Martin Scorsese", "Francis Ford Coppola", "Brian De Palma"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un story-board ?",
+    "type": "ouverte",
+    "id_subtheme": 14,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le film le plus récompensé aux Oscars ?",
+    "type": "fermée unique",
+    "id_subtheme": 14,
+    "options": ["Titanic", "Ben-Hur", "Le Seigneur des Anneaux : Le Retour du Roi", "Autant en emporte le vent"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un travelling ?",
+    "type": "ouverte",
+    "id_subtheme": 14,
+    "options": []
+  },
+  {
+    "libelle": "Qui a réalisé '2001, l'Odyssée de l'espace' ?",
+    "type": "fermée unique",
+    "id_subtheme": 14,
+    "options": ["Stanley Kubrick", "Steven Spielberg", "George Lucas", "Ridley Scott"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un film noir ?",
+    "type": "ouverte",
+    "id_subtheme": 14,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le premier film de la saga Star Wars ?",
+    "type": "fermée unique",
+    "id_subtheme": 14,
+    "options": ["Star Wars: Episode I", "Star Wars: Episode IV", "Star Wars: Episode V", "Star Wars: Episode VI"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un générique de film ?",
+    "type": "ouverte",
+    "id_subtheme": 14,
+    "options": []
+  },
+  {
+    "libelle": "Qui a réalisé 'Le Parrain' ?",
+    "type": "fermée unique",
+    "id_subtheme": 14,
+    "options": ["Martin Scorsese", "Francis Ford Coppola", "Steven Spielberg", "Brian De Palma"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un film d'animation ?",
+    "type": "ouverte",
+    "id_subtheme": 14,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le film le plus rentable de l'histoire ?",
+    "type": "fermée unique",
+    "id_subtheme": 14,
+    "options": ["Avatar", "Titanic", "Avengers: Endgame", "Star Wars: Le Réveil de la Force"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un film documentaire ?",
+    "type": "ouverte",
+    "id_subtheme": 14,
+    "options": []
+  },
+  {
+    "libelle": "Qu'est-ce que l'offre et la demande ?",
+    "type": "ouverte",
+    "id_subtheme": 15,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'indicateur principal de la santé économique d'un pays ?",
+    "type": "fermée unique",
+    "id_subtheme": 15,
+    "options": ["Taux de chômage", "PIB", "Inflation", "Balance commerciale"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un marché concurrentiel ?",
+    "type": "ouverte",
+    "id_subtheme": 15,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'une banque centrale ?",
+    "type": "fermée multiple",
+    "id_subtheme": 15,
+    "options": ["Contrôler l'inflation", "Émettre de la monnaie", "Superviser les banques commerciales", "Fixer les taux d'intérêt", "Gérer les dépenses publiques"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'inflation ?",
+    "type": "ouverte",
+    "id_subtheme": 15,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le principal objectif de la politique monétaire ?",
+    "type": "fermée unique",
+    "id_subtheme": 15,
+    "options": ["Réduire le chômage", "Stabiliser les prix", "Augmenter les exportations", "Réduire les importations"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un monopole ?",
+    "type": "ouverte",
+    "id_subtheme": 15,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des impôts dans une économie ?",
+    "type": "fermée multiple",
+    "id_subtheme": 15,
+    "options": ["Financer les dépenses publiques", "Redistribuer les richesses", "Réguler l'économie", "Contrôler l'inflation", "Stimuler la consommation"]
+  },
+  {
+    "libelle": "Qu'est-ce que le commerce international ?",
+    "type": "ouverte",
+    "id_subtheme": 15,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'effet d'une dévaluation de la monnaie ?",
+    "type": "fermée multiple",
+    "id_subtheme": 15,
+    "options": ["Augmentation des exportations", "Diminution des importations", "Augmentation de l'inflation", "Diminution du tourisme", "Augmentation des investissements étrangers"]
+  },
+  {
+    "libelle": "Qu'est-ce que le chômage ?",
+    "type": "ouverte",
+    "id_subtheme": 15,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle de la Bourse ?",
+    "type": "fermée multiple",
+    "id_subtheme": 15,
+    "options": ["Financer les entreprises", "Permettre l'épargne des ménages", "Spéculer sur les actifs", "Contrôler les taux d'intérêt", "Réguler l'économie"]
+  },
+  {
+    "libelle": "Qu'est-ce que la croissance économique ?",
+    "type": "ouverte",
+    "id_subtheme": 15,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'impact d'une hausse des taux d'intérêt ?",
+    "type": "fermée multiple",
+    "id_subtheme": 15,
+    "options": ["Diminution de la consommation", "Augmentation de l'épargne", "Baisse des investissements", "Appreciation de la monnaie", "Augmentation des exportations"]
+  },
+  {
+    "libelle": "Qu'est-ce que la dette publique ?",
+    "type": "ouverte",
+    "id_subtheme": 15,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des entreprises dans l'économie ?",
+    "type": "fermée multiple",
+    "id_subtheme": 15,
+    "options": ["Produire des biens et services", "Créer des emplois", "Innover", "Payer des impôts", "Réguler les marchés"]
+  },
+  {
+    "libelle": "Qu'est-ce que le droit civil ?",
+    "type": "ouverte",
+    "id_subtheme": 16,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le principe de la présomption d'innocence ?",
+    "type": "fermée unique",
+    "id_subtheme": 16,
+    "options": ["Tout accusé est coupable jusqu'à preuve du contraire", "Tout accusé est innocent jusqu'à preuve du contraire", "Tout accusé doit prouver son innocence", "Tout accusé est coupable sans preuve"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un contrat ?",
+    "type": "ouverte",
+    "id_subtheme": 16,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un avocat ?",
+    "type": "fermée multiple",
+    "id_subtheme": 16,
+    "options": ["Défendre les intérêts de son client", "Conseiller juridiquement", "Représenter en justice", "Rédiger des contrats", "Juger les affaires"]
+  },
+  {
+    "libelle": "Qu'est-ce que la Constitution ?",
+    "type": "ouverte",
+    "id_subtheme": 16,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le principe de la séparation des pouvoirs ?",
+    "type": "fermée unique",
+    "id_subtheme": 16,
+    "options": ["Pouvoir exécutif, législatif et judiciaire", "Pouvoir économique, politique et social", "Pouvoir local, régional et national", "Pouvoir militaire, civil et religieux"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un délit ?",
+    "type": "ouverte",
+    "id_subtheme": 16,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un juge ?",
+    "type": "fermée multiple",
+    "id_subtheme": 16,
+    "options": ["Appliquer la loi", "Rendre des jugements", "Garantir les droits des parties", "Enquêter sur les crimes", "Légiférer"]
+  },
+  {
+    "libelle": "Qu'est-ce que les droits de l'homme ?",
+    "type": "ouverte",
+    "id_subtheme": 16,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle du Parlement ?",
+    "type": "fermée multiple",
+    "id_subtheme": 16,
+    "options": ["Voter les lois", "Contrôler le gouvernement", "Représenter les citoyens", "Nommer les ministres", "Juger les lois"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une loi ?",
+    "type": "ouverte",
+    "id_subtheme": 16,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le principe de l'égalité devant la loi ?",
+    "type": "fermée unique",
+    "id_subtheme": 16,
+    "options": ["Tous les citoyens sont égaux en droits", "Certains citoyens ont plus de droits", "Les lois ne s'appliquent pas à tous", "Les juges décident des droits de chacun"]
+  },
+  {
+    "libelle": "Qu'est-ce que la justice ?",
+    "type": "ouverte",
+    "id_subtheme": 16,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle de la Cour de cassation ?",
+    "type": "fermée unique",
+    "id_subtheme": 16,
+    "options": ["Juger les affaires en première instance", "Contrôler l'application de la loi par les juges", "Légiférer", "Représenter le gouvernement en justice"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un tribunal ?",
+    "type": "ouverte",
+    "id_subtheme": 16,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le principe de la laïcité ?",
+    "type": "fermée unique",
+    "id_subtheme": 16,
+    "options": ["Séparation des religions et de l'État", "Union des religions et de l'État", "Primauté d'une religion sur les autres", "Absence de religion dans la société"]
+  },
+  {
+    "libelle": "Qu'est-ce que la sociologie ?",
+    "type": "ouverte",
+    "id_subtheme": 17,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'objet d'étude de la psychologie ?",
+    "type": "fermée unique",
+    "id_subtheme": 17,
+    "options": ["Les comportements humains", "Les structures sociales", "Les phénomènes naturels", "Les systèmes économiques"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un groupe social ?",
+    "type": "ouverte",
+    "id_subtheme": 17,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle de la socialisation ?",
+    "type": "fermée multiple",
+    "id_subtheme": 17,
+    "options": ["Transmettre les normes et valeurs", "Former la personnalité", "Intégrer les individus dans la société", "Contrôler les comportements déviants", "Déterminer les statuts sociaux"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une norme sociale ?",
+    "type": "ouverte",
+    "id_subtheme": 17,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'objet d'étude de l'anthropologie ?",
+    "type": "fermée unique",
+    "id_subtheme": 17,
+    "options": ["Les cultures humaines", "Les comportements animaux", "Les phénomènes naturels", "Les systèmes économiques"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un stéréotype ?",
+    "type": "ouverte",
+    "id_subtheme": 17,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des institutions sociales ?",
+    "type": "fermée multiple",
+    "id_subtheme": 17,
+    "options": ["Réguler les comportements", "Transmettre la culture", "Assurer la cohésion sociale", "Contrôler les ressources économiques", "Déterminer les lois"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un conflit social ?",
+    "type": "ouverte",
+    "id_subtheme": 17,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'objet d'étude de la psychologie sociale ?",
+    "type": "fermée unique",
+    "id_subtheme": 17,
+    "options": ["Les comportements individuels", "Les interactions entre individus", "Les structures cérébrales", "Les troubles mentaux"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une identité sociale ?",
+    "type": "ouverte",
+    "id_subtheme": 17,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des rites dans une société ?",
+    "type": "fermée multiple",
+    "id_subtheme": 17,
+    "options": ["Renforcer les liens sociaux", "Marquer les transitions de vie", "Transmettre les valeurs", "Contrôler les comportements", "Déterminer les statuts"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une déviance ?",
+    "type": "ouverte",
+    "id_subtheme": 17,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'objet d'étude de la psychologie cognitive ?",
+    "type": "fermée unique",
+    "id_subtheme": 17,
+    "options": ["Les processus mentaux", "Les comportements sociaux", "Les structures cérébrales", "Les troubles mentaux"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une culture ?",
+    "type": "ouverte",
+    "id_subtheme": 17,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des symboles dans une société ?",
+    "type": "fermée multiple",
+    "id_subtheme": 17,
+    "options": ["Communiquer des significations", "Renforcer l'identité collective", "Faciliter les interactions", "Contrôler les comportements", "Déterminer les lois"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'orientation professionnelle ?",
+    "type": "ouverte",
+    "id_subtheme": 18,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un conseiller d'orientation ?",
+    "type": "fermée multiple",
+    "id_subtheme": 18,
+    "options": ["Aider à choisir une carrière", "Informer sur les métiers", "Accompagner dans les démarches de formation", "Évaluer les compétences", "Recruter des candidats"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un bilan de compétences ?",
+    "type": "ouverte",
+    "id_subtheme": 18,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les secteurs porteurs d'emploi ?",
+    "type": "fermée multiple",
+    "id_subtheme": 18,
+    "options": ["Numérique", "Santé", "Environnement", "BTP", "Agriculture"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un stage en entreprise ?",
+    "type": "ouverte",
+    "id_subtheme": 18,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les critères pour choisir un métier ?",
+    "type": "fermée multiple",
+    "id_subtheme": 18,
+    "options": ["Intérêts personnels", "Compétences", "Débouchés", "Salaire", "Environnement de travail"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une VAE (Validation des Acquis de l'Expérience) ?",
+    "type": "ouverte",
+    "id_subtheme": 18,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les métiers de la transition écologique ?",
+    "type": "fermée multiple",
+    "id_subtheme": 18,
+    "options": ["Ingénieur environnement", "Technicien en énergies renouvelables", "Urbaniste", "Agriculteur bio", "Économiste"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un CV ?",
+    "type": "ouverte",
+    "id_subtheme": 18,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les éléments d'une lettre de motivation ?",
+    "type": "fermée multiple",
+    "id_subtheme": 18,
+    "options": ["En-tête", "Introduction", "Parcours", "Motivations", "Formule de politesse"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un entretien d'embauche ?",
+    "type": "ouverte",
+    "id_subtheme": 18,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les droits d'un salarié ?",
+    "type": "fermée multiple",
+    "id_subtheme": 18,
+    "options": ["Droit à la formation", "Droit à la rémunération", "Droit à la sécurité", "Droit aux congés", "Droit à la promotion"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un contrat de travail ?",
+    "type": "ouverte",
+    "id_subtheme": 18,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types de contrats de travail ?",
+    "type": "fermée multiple",
+    "id_subtheme": 18,
+    "options": ["CDI", "CDD", "Intérim", "Apprentissage", "Stage"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une reconversion professionnelle ?",
+    "type": "ouverte",
+    "id_subtheme": 18,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les outils pour rechercher un emploi ?",
+    "type": "fermée multiple",
+    "id_subtheme": 18,
+    "options": ["Pôle Emploi", "Réseaux professionnels", "Sites d'offres d'emploi", "Salons de recrutement", "Candidatures spontanées"]
+  },
+  {
+    "libelle": "Qu'est-ce que la gestion de projet ?",
+    "type": "ouverte",
+    "id_subtheme": 19,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un chef de projet ?",
+    "type": "fermée multiple",
+    "id_subtheme": 19,
+    "options": ["Planifier", "Organiser", "Contrôler", "Communiquer", "Recruter"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un diagramme de Gantt ?",
+    "type": "ouverte",
+    "id_subtheme": 19,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les principes de la méthode Agile ?",
+    "type": "fermée multiple",
+    "id_subtheme": 19,
+    "options": ["Itérations courtes", "Collaboration", "Adaptabilité", "Documentation exhaustive", "Livraisons fréquentes"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un livrable ?",
+    "type": "ouverte",
+    "id_subtheme": 19,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les outils de gestion de projet ?",
+    "type": "fermée multiple",
+    "id_subtheme": 19,
+    "options": ["Trello", "Asana", "Jira", "Microsoft Project", "Excel"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un risque projet ?",
+    "type": "ouverte",
+    "id_subtheme": 19,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types de risques en gestion de projet ?",
+    "type": "fermée multiple",
+    "id_subtheme": 19,
+    "options": ["Techniques", "Humains", "Financiers", "Environnementaux", "Légaux"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une réunion de projet ?",
+    "type": "ouverte",
+    "id_subtheme": 19,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les indicateurs de performance d'un projet ?",
+    "type": "fermée multiple",
+    "id_subtheme": 19,
+    "options": ["Coût", "Délai", "Qualité", "Satisfaction client", "Rentabilité"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un jalon (milestone) ?",
+    "type": "ouverte",
+    "id_subtheme": 19,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les rôles dans une équipe projet ?",
+    "type": "fermée multiple",
+    "id_subtheme": 19,
+    "options": ["Chef de projet", "Développeur", "Testeur", "Client", "Sponsor"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un retroplanning ?",
+    "type": "ouverte",
+    "id_subtheme": 19,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les avantages de la méthode Scrum ?",
+    "type": "fermée multiple",
+    "id_subtheme": 19,
+    "options": ["Flexibilité", "Transparence", "Collaboration", "Documentation légère", "Planification rigide"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un backlog ?",
+    "type": "ouverte",
+    "id_subtheme": 19,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les documents clés en gestion de projet ?",
+    "type": "fermée multiple",
+    "id_subtheme": 19,
+    "options": ["Cahier des charges", "Plan de projet", "Rapport d'avancement", "Compte-rendu de réunion", "Budget"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un budget ?",
+    "type": "ouverte",
+    "id_subtheme": 20,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'une banque ?",
+    "type": "fermée multiple",
+    "id_subtheme": 20,
+    "options": ["Recevoir des dépôts", "Accorder des crédits", "Gérer des comptes", "Investir", "Assurer"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un livret A ?",
+    "type": "ouverte",
+    "id_subtheme": 20,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types de placements financiers ?",
+    "type": "fermée multiple",
+    "id_subtheme": 20,
+    "options": ["Livret", "Assurance-vie", "Actions", "Obligations", "Cryptomonnaies"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un crédit à la consommation ?",
+    "type": "ouverte",
+    "id_subtheme": 20,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les risques d'un investissement en bourse ?",
+    "type": "fermée multiple",
+    "id_subtheme": 20,
+    "options": ["Perte en capital", "Volatilité", "Liquidité", "Inflation", "Fiscalité"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une cryptomonnaie ?",
+    "type": "ouverte",
+    "id_subtheme": 20,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les avantages d'une assurance-vie ?",
+    "type": "fermée multiple",
+    "id_subtheme": 20,
+    "options": ["Sécurité", "Rendement", "Fiscalité avantageuse", "Transmission", "Liquidité"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un taux d'intérêt ?",
+    "type": "ouverte",
+    "id_subtheme": 20,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types de crédits immobiliers ?",
+    "type": "fermée multiple",
+    "id_subtheme": 20,
+    "options": ["Prêt à taux fixe", "Prêt à taux variable", "Prêt relais", "Prêt in fine", "Prêt à palier"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un PEA ?",
+    "type": "ouverte",
+    "id_subtheme": 20,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les frais bancaires courants ?",
+    "type": "fermée multiple",
+    "id_subtheme": 20,
+    "options": ["Frais de tenue de compte", "Frais de carte bancaire", "Frais de retrait", "Frais de virement", "Frais de découvert"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un fonds d'investissement ?",
+    "type": "ouverte",
+    "id_subtheme": 20,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les critères pour choisir une assurance habitation ?",
+    "type": "fermée multiple",
+    "id_subtheme": 20,
+    "options": ["Garanties", "Prix", "Franchise", "Services inclus", "Réputation de l'assureur"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un prêt étudiant ?",
+    "type": "ouverte",
+    "id_subtheme": 20,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les avantages d'un compte joint ?",
+    "type": "fermée multiple",
+    "id_subtheme": 20,
+    "options": ["Gestion commune", "Simplification des opérations", "Transparence", "Sécurité", "Rendement"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'anatomie ?",
+    "type": "ouverte",
+    "id_subtheme": 21,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle du cœur dans le corps humain ?",
+    "type": "fermée unique",
+    "id_subtheme": 21,
+    "options": ["Pomper le sang", "Filtrer le sang", "Produire des hormones", "Digérer les aliments"]
+  },
+  {
+    "libelle": "Qu'est-ce que le système nerveux ?",
+    "type": "ouverte",
+    "id_subtheme": 21,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les principaux groupes sanguins ?",
+    "type": "fermée multiple",
+    "id_subtheme": 21,
+    "options": ["A", "B", "AB", "O", "A-"]
+  },
+  {
+    "libelle": "Qu'est-ce que la digestion ?",
+    "type": "ouverte",
+    "id_subtheme": 21,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des poumons ?",
+    "type": "fermée unique",
+    "id_subtheme": 21,
+    "options": ["Filtrer le sang", "Échanger les gaz", "Produire des enzymes", "Stocker les nutriments"]
+  },
+  {
+    "libelle": "Qu'est-ce que le système immunitaire ?",
+    "type": "ouverte",
+    "id_subtheme": 21,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types de muscles dans le corps humain ?",
+    "type": "fermée multiple",
+    "id_subtheme": 21,
+    "options": ["Muscles squelettiques", "Muscles cardiaques", "Muscles lisses", "Muscles striés", "Muscles volontaires"]
+  },
+  {
+    "libelle": "Qu'est-ce que la circulation sanguine ?",
+    "type": "ouverte",
+    "id_subtheme": 21,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle du foie ?",
+    "type": "fermée unique",
+    "id_subtheme": 21,
+    "options": ["Produire de la bile", "Filtrer le sang", "Stocker les vitamines", "Toutes ces réponses"]
+  },
+  {
+    "libelle": "Qu'est-ce que la respiration cellulaire ?",
+    "type": "ouverte",
+    "id_subtheme": 21,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les composants du sang ?",
+    "type": "fermée multiple",
+    "id_subtheme": 21,
+    "options": ["Globules rouges", "Globules blancs", "Plaquettes", "Plasma", "Hémoglobine"]
+  },
+  {
+    "libelle": "Qu'est-ce que le métabolisme ?",
+    "type": "ouverte",
+    "id_subtheme": 21,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des reins ?",
+    "type": "fermée unique",
+    "id_subtheme": 21,
+    "options": ["Filtrer le sang", "Produire des hormones", "Réguler l'équilibre hydrique", "Toutes ces réponses"]
+  },
+  {
+    "libelle": "Qu'est-ce que la nutrition ?",
+    "type": "ouverte",
+    "id_subtheme": 21,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les principaux nutriments ?",
+    "type": "fermée multiple",
+    "id_subtheme": 21,
+    "options": ["Glucides", "Lipides", "Protéines", "Vitamines", "Minéraux"]
+  },
+  {
+    "libelle": "Qu'est-ce que le stress ?",
+    "type": "ouverte",
+    "id_subtheme": 22,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les symptômes de l'anxiété ?",
+    "type": "fermée multiple",
+    "id_subtheme": 22,
+    "options": ["Palpitations", "Transpiration", "Vertiges", "Insomnie", "Douleurs musculaires"]
+  },
+  {
+    "libelle": "Qu'est-ce que la mémoire ?",
+    "type": "ouverte",
+    "id_subtheme": 22,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un psychologue ?",
+    "type": "fermée multiple",
+    "id_subtheme": 22,
+    "options": ["Écouter", "Conseiller", "Diagnostiquer", "Soigner", "Rechercher"]
+  },
+  {
+    "libelle": "Qu'est-ce que la motivation ?",
+    "type": "ouverte",
+    "id_subtheme": 22,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types de mémoire ?",
+    "type": "fermée multiple",
+    "id_subtheme": 22,
+    "options": ["Mémoire sensorielle", "Mémoire à court terme", "Mémoire à long terme", "Mémoire procédurale", "Mémoire épisodique"]
+  },
+  {
+    "libelle": "Qu'est-ce que la dépression ?",
+    "type": "ouverte",
+    "id_subtheme": 22,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les mécanismes de défense ?",
+    "type": "fermée multiple",
+    "id_subtheme": 22,
+    "options": ["Refoulement", "Projection", "Rationalisation", "Sublimation", "Déni"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'intelligence émotionnelle ?",
+    "type": "ouverte",
+    "id_subtheme": 22,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle d'un psychiatre ?",
+    "type": "fermée unique",
+    "id_subtheme": 22,
+    "options": ["Prescrire des médicaments", "Faire de la psychothérapie", "Diagnostiquer les troubles mentaux", "Toutes ces réponses"]
+  },
+  {
+    "libelle": "Qu'est-ce que la cognition ?",
+    "type": "ouverte",
+    "id_subtheme": 22,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les troubles anxieux ?",
+    "type": "fermée multiple",
+    "id_subtheme": 22,
+    "options": ["Trouble panique", "Phobie spécifique", "Trouble anxieux généralisé", "Trouble obsessionnel compulsif", "Trouble de stress post-traumatique"]
+  },
+  {
+    "libelle": "Qu'est-ce que la psychothérapie ?",
+    "type": "ouverte",
+    "id_subtheme": 22,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les bienfaits de la méditation ?",
+    "type": "fermée multiple",
+    "id_subtheme": 22,
+    "options": ["Réduction du stress", "Amélioration de la concentration", "Meilleure gestion des émotions", "Augmentation de la créativité", "Renforcement du système immunitaire"]
+  },
+  {
+    "libelle": "Qu'est-ce que le développement personnel ?",
+    "type": "ouverte",
+    "id_subtheme": 22,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les piliers du bien-être psychologique ?",
+    "type": "fermée multiple",
+    "id_subtheme": 22,
+    "options": ["Estime de soi", "Réseau social", "Autonomie", "Maîtrise de l'environnement", "Sens à la vie"]
+  },
+  {
+    "libelle": "Qu'est-ce que la physiologie de l'effort ?",
+    "type": "ouverte",
+    "id_subtheme": 23,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle des muscles pendant l'exercice ?",
+    "type": "fermée unique",
+    "id_subtheme": 23,
+    "options": ["Produire de la chaleur", "Permettre le mouvement", "Stocker de l'énergie", "Toutes ces réponses"]
+  },
+  {
+    "libelle": "Qu'est-ce que la fréquence cardiaque ?",
+    "type": "ouverte",
+    "id_subtheme": 23,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les bienfaits de l'activité physique ?",
+    "type": "fermée multiple",
+    "id_subtheme": 23,
+    "options": ["Amélioration de la santé cardiovasculaire", "Renforcement musculaire", "Réduction du stress", "Amélioration de l'humeur", "Augmentation de la longévité"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'endurance ?",
+    "type": "ouverte",
+    "id_subtheme": 23,
+    "options": []
+  },
+  {
+    "libelle": "Quel est le rôle de la respiration pendant l'exercice ?",
+    "type": "fermée unique",
+    "id_subtheme": 23,
+    "options": ["Apporter de l'oxygène aux muscles", "Éliminer le CO2", "Réguler la température corporelle", "Toutes ces réponses"]
+  },
+  {
+    "libelle": "Qu'est-ce que la récupération après l'effort ?",
+    "type": "ouverte",
+    "id_subtheme": 23,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les types d'entraînement physique ?",
+    "type": "fermée multiple",
+    "id_subtheme": 23,
+    "options": ["Cardio", "Musculation", "Souplesse", "Équilibre", "Plyométrie"]
+  },
+  {
+    "libelle": "Qu'est-ce que la VO2 max ?",
+    "type": "ouverte",
+    "id_subtheme": 23,
+    "options": []
+  },
+  {
+    "libelle": "Quel est l'impact de l'hydratation sur la performance sportive ?",
+    "type": "fermée unique",
+    "id_subtheme": 23,
+    "options": ["Améliore l'endurance", "Prévient les crampes", "Régule la température corporelle", "Toutes ces réponses"]
+  },
+  {
+    "libelle": "Qu'est-ce que le dopage ?",
+    "type": "ouverte",
+    "id_subtheme": 23,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les risques d'une sédentarité prolongée ?",
+    "type": "fermée multiple",
+    "id_subtheme": 23,
+    "options": ["Obésité", "Maladies cardiovasculaires", "Diabète", "Déppression", "Ostéoporose"]
+  },
+  {
+    "libelle": "Qu'est-ce que la nutrition sportive ?",
+    "type": "ouverte",
+    "id_subtheme": 23,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les nutriments essentiels pour les sportifs ?",
+    "type": "fermée multiple",
+    "id_subtheme": 23,
+    "options": ["Protéines", "Glucides", "Lipides", "Vitamines", "Minéraux"]
+  },
+  {
+    "libelle": "Qu'est-ce que la kinésithérapie du sport ?",
+    "type": "ouverte",
+    "id_subtheme": 23,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les effets de l'échauffement avant l'exercice ?",
+    "type": "fermée multiple",
+    "id_subtheme": 23,
+    "options": ["Augmentation de la température musculaire", "Amélioration de la souplesse", "Réduction des risques de blessure", "Préparation mentale", "Augmentation de la force"]
+  },
+  {
+    "libelle": "Qu'est-ce que le développement durable ?",
+    "type": "ouverte",
+    "id_subtheme": 24,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les principes du développement durable ?",
+    "type": "fermée multiple",
+    "id_subtheme": 24,
+    "options": ["Économie", "Social", "Environnement", "Culturel", "Politique"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'empreinte carbone ?",
+    "type": "ouverte",
+    "id_subtheme": 24,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les énergies renouvelables ?",
+    "type": "fermée multiple",
+    "id_subtheme": 24,
+    "options": ["Solaire", "Éolien", "Hydraulique", "Géothermie", "Biomasse"]
+  },
+  {
+    "libelle": "Qu'est-ce que le recyclage ?",
+    "type": "ouverte",
+    "id_subtheme": 24,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les enjeux de la transition écologique ?",
+    "type": "fermée multiple",
+    "id_subtheme": 24,
+    "options": ["Réduction des émissions de CO2", "Préservation de la biodiversité", "Gestion des ressources naturelles", "Adaptation au changement climatique", "Développement des énergies fossiles"]
+  },
+  {
+    "libelle": "Qu'est-ce que la biodiversité ?",
+    "type": "ouverte",
+    "id_subtheme": 24,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les impacts de la déforestation ?",
+    "type": "fermée multiple",
+    "id_subtheme": 24,
+    "options": ["Perte de biodiversité", "Augmentation des émissions de CO2", "Modification du climat", "Dégradation des sols", "Augmentation des précipitations"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'économie circulaire ?",
+    "type": "ouverte",
+    "id_subtheme": 24,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les objectifs de développement durable (ODD) ?",
+    "type": "fermée multiple",
+    "id_subtheme": 24,
+    "options": ["Éradication de la pauvreté", "Éducation de qualité", "Égalité entre les sexes", "Eau propre et assainissement", "Énergie propre et d'un coût abordable"]
+  },
+  {
+    "libelle": "Qu'est-ce que la pollution de l'air ?",
+    "type": "ouverte",
+    "id_subtheme": 24,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les effets du changement climatique ?",
+    "type": "fermée multiple",
+    "id_subtheme": 24,
+    "options": ["Montée des eaux", "Augmentation des températures", "Extinction d'espèces", "Modification des régimes de précipitations", "Acidification des océans"]
+  },
+  {
+    "libelle": "Qu'est-ce que les énergies fossiles ?",
+    "type": "ouverte",
+    "id_subtheme": 24,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les avantages des transports en commun ?",
+    "type": "fermée multiple",
+    "id_subtheme": 24,
+    "options": ["Réduction des émissions de CO2", "Diminution des embouteillages", "Accessibilité", "Coût réduit", "Amélioration de la qualité de l'air"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'agroécologie ?",
+    "type": "ouverte",
+    "id_subtheme": 24,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les gestes pour réduire ses déchets ?",
+    "type": "fermée multiple",
+    "id_subtheme": 24,
+    "options": ["Tri sélectif", "Compostage", "Réutilisation", "Réparation", "Achat en vrac"]
+  },
+  {
+    "libelle": "Qu'est-ce que la citoyenneté ?",
+    "type": "ouverte",
+    "id_subtheme": 25,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les droits d'un citoyen ?",
+    "type": "fermée multiple",
+    "id_subtheme": 25,
+    "options": ["Droit de vote", "Droit à l'éducation", "Droit à la santé", "Droit au travail", "Droit à la liberté d'expression"]
+  },
+  {
+    "libelle": "Qu'est-ce que la laïcité ?",
+    "type": "ouverte",
+    "id_subtheme": 25,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les symboles de la République française ?",
+    "type": "fermée multiple",
+    "id_subtheme": 25,
+    "options": ["Drapeau tricolore", "La Marseillaise", "Marianne", "Devise 'Liberté, Égalité, Fraternité'", "Coq gaulois"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'une association ?",
+    "type": "ouverte",
+    "id_subtheme": 25,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les principes de la démocratie ?",
+    "type": "fermée multiple",
+    "id_subtheme": 25,
+    "options": ["Souveraineté nationale", "Séparation des pouvoirs", "Élections libres", "Respect des droits de l'homme", "Primauté de la loi"]
+  },
+  {
+    "libelle": "Qu'est-ce que l'engagement citoyen ?",
+    "type": "ouverte",
+    "id_subtheme": 25,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les devoirs d'un citoyen ?",
+    "type": "fermée multiple",
+    "id_subtheme": 25,
+    "options": ["Respecter les lois", "Payer des impôts", "Participer à la défense nationale", "Voter", "Protéger l'environnement"]
+  },
+  {
+    "libelle": "Qu'est-ce que la solidarité ?",
+    "type": "ouverte",
+    "id_subtheme": 25,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les valeurs de la République française ?",
+    "type": "fermée multiple",
+    "id_subtheme": 25,
+    "options": ["Liberté", "Égalité", "Fraternité", "Laïcité", "Justice sociale"]
+  },
+  {
+    "libelle": "Qu'est-ce qu'un référendum ?",
+    "type": "ouverte",
+    "id_subtheme": 25,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les institutions de la Ve République ?",
+    "type": "fermée multiple",
+    "id_subtheme": 25,
+    "options": ["Président de la République", "Gouvernement", "Parlement", "Conseil constitutionnel", "Cour de cassation"]
+  },
+  {
+    "libelle": "Qu'est-ce que le service national universel ?",
+    "type": "ouverte",
+    "id_subtheme": 25,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les droits des enfants ?",
+    "type": "fermée multiple",
+    "id_subtheme": 25,
+    "options": ["Droit à l'éducation", "Droit à la protection", "Droit à la santé", "Droit à une identité", "Droit à la liberté d'expression"]
+  },
+  {
+    "libelle": "Qu'est-ce que la discrimination ?",
+    "type": "ouverte",
+    "id_subtheme": 25,
+    "options": []
+  },
+  {
+    "libelle": "Quels sont les moyens de participation citoyenne ?",
+    "type": "fermée multiple",
+    "id_subtheme": 25,
+    "options": ["Voter", "Manifester", "S'engager dans une association", "Signer une pétition", "Participer à un débat public"]
+  }
+]
