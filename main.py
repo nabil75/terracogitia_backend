@@ -2,8 +2,11 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers.theme import router as theme_router
+from routers.theme import router as theme_router, subthemes_router
 from routers.evaluation import router as evaluation_router
+from routers.discipline import router as discipline_router
+from discovering import router as discovering_router
+from routers.auth import router as auth_router
 from database import init_db, close_db
 
 @asynccontextmanager
@@ -36,5 +39,9 @@ app.add_middleware(
 )
 
 app.include_router(theme_router)
+app.include_router(subthemes_router)
 app.include_router(evaluation_router)
+app.include_router(discipline_router)
+app.include_router(discovering_router)
+app.include_router(auth_router)
 
