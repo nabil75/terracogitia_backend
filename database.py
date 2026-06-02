@@ -14,6 +14,100 @@ pool = None
 async def init_db():
     global pool
     pool = await asyncpg.create_pool(**db_params)
+    # Schéma attendu par POST /themes/regroupement_questions_parcours.
+    async with pool.acquire() as conn:
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS groupe INTEGER"
+        )
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS libelle_groupe TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS timeline JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS niveau_pyramide TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS role_cognitif TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS transformations_cognitives JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS prerequis JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS ouvre_vers JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS niveau_cognitif TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS objectif_pedagogique TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS concepts_vises JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS dessin JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE discipline ADD COLUMN IF NOT EXISTS tagline TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE discipline ADD COLUMN IF NOT EXISTS niveau_estime TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE discipline ADD COLUMN IF NOT EXISTS projection TEXT"
+        )
+        await conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS competence (
+                id_competence SERIAL PRIMARY KEY,
+                label TEXT NOT NULL,
+                id_discipline INTEGER NOT NULL
+                    REFERENCES discipline(id_discipline) ON DELETE CASCADE
+            )
+            """
+        )
+        await conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS prerequis (
+                id_prerequis SERIAL PRIMARY KEY,
+                label TEXT NOT NULL,
+                id_discipline INTEGER NOT NULL
+                    REFERENCES discipline(id_discipline) ON DELETE CASCADE
+            )
+            """
+        )
+        await conn.execute(
+            "ALTER TABLE competence ADD COLUMN IF NOT EXISTS id_discipline INTEGER "
+            "REFERENCES discipline(id_discipline) ON DELETE CASCADE"
+        )
+        await conn.execute(
+            "ALTER TABLE prerequis ADD COLUMN IF NOT EXISTS id_discipline INTEGER "
+            "REFERENCES discipline(id_discipline) ON DELETE CASCADE"
+        )
+        await conn.execute(
+            "ALTER TABLE proposition ADD COLUMN IF NOT EXISTS statut_current BOOLEAN "
+            "NOT NULL DEFAULT false"
+        )
+        await conn.execute(
+            "ALTER TABLE proposition ADD COLUMN IF NOT EXISTS notes TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE proposition ADD COLUMN IF NOT EXISTS date_creation TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE theme ADD COLUMN IF NOT EXISTS role_cognitif TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE theme ADD COLUMN IF NOT EXISTS niveau_pyramide TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE theme ADD COLUMN IF NOT EXISTS transformation_cognitive TEXT"
+        )
 
 
 async def close_db():

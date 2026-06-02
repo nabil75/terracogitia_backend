@@ -1,0 +1,29 @@
+À quoi sert exactement Gensim ?
+Quels problèmes concrets ça permet de résoudre ?
+Quelle est la différence entre Gensim et scikit-learn ou spaCy ?
+Quels sont les concepts clés (corpus, dictionnaire, modèle, vecteurs) ?
+Qu’est-ce qu’un corpus dans Gensim et sous quel format il doit être ?
+Comment transformer du texte brut en représentation exploitable ?
+À quoi sert un dictionnaire (Dictionary) ?
+C’est quoi le format bag-of-words et pourquoi on l’utilise ?
+Comment sauvegarder et recharger ces objets ?
+Qu’est-ce que LDA (Latent Dirichlet Allocation) ?
+Qu’est-ce qu’un “topic” concrètement ?
+Comment choisir le nombre de topics ?
+Comment interpréter les résultats ?
+Comment fonctionne Word2Vec ?
+Quelle différence entre CBOW et Skip-gram ?
+Que représentent les vecteurs de mots ?
+Comment mesurer la similarité entre mots ?
+Comment entraîner un modèle sur mon propre dataset ?
+Quels sont les paramètres importants (et leurs effets) ?
+Comment évaluer la qualité d’un modèle ?
+Comment utiliser un modèle entraîné dans une application réelle ?
+Quels sont les biais possibles dans les modèles ?
+Dans quels cas Gensim n’est pas adapté ?
+Quelle est la différence entre embeddings Gensim et BERT ?
+Quand utiliser LDA vs embeddings modernes ?
+Comment optimiser les performances sur de gros corpus ?
+Comment mettre à jour un modèle avec de nouvelles données ?
+Comment personnaliser le pipeline (tokenization, preprocessing…) ?
+Comment intégrer Gensim avec d’autres outils Python (pandas, pipelines ML…) ?
