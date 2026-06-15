@@ -16,10 +16,12 @@ import database
 
 from queries import *
 from fastapi.responses import FileResponse
-from typing import List, Optional, Set, Tuple
+from typing import List, Literal, Optional, Set, Tuple
 from sqlalchemy import create_engine, MetaData, Table, select
 from sqlalchemy.orm import sessionmaker
 from mistralai.client import Mistral
+from mistral.language_prompts import normalize_lang, prompt_prefix
+from mistral.pyramid_prompts import dominants_from_entity, normalize_pyramid_level
 from mistral.theme_mistral import generate_theme_ai as mistral_generate_theme_ai
 
 router = APIRouter(prefix="/themes", tags=["themes"])
@@ -94,6 +96,7 @@ class RegroupementQuestionsParcoursPayload(PydanticBaseModel):
         ...,
         validation_alias=AliasChoices("id_subtheme", "idSubtheme"),
     )
+    lang: Optional[Literal["fr", "en"]] = None
 
 
 class RegroupementQuestionFamilleDto(PydanticBaseModel):
@@ -135,6 +138,17 @@ def _ai_string_list_for_db(raw) -> Optional[str]:
     return json.dumps(items, ensure_ascii=False)
 
 
+def _ai_json_for_db(raw) -> Optional[str]:
+    """Sérialise un objet JSON pour colonnes JSONB."""
+    if raw is None:
+        return None
+    if isinstance(raw, str) and raw.strip():
+        return raw.strip()
+    if isinstance(raw, (dict, list)):
+        return json.dumps(raw, ensure_ascii=False)
+    return None
+
+
 def _question_libelle_from_ai_entry(entry) -> Optional[str]:
     if entry is None:
         return None
@@ -163,21 +177,33 @@ def _parse_ai_question_entry(entry) -> Optional[dict]:
             return None
         return {
             "libelle": libelle,
+            "niveau_pyramide": None,
             "niveau_cognitif": None,
+            "operation_cognitive": None,
             "objectif_pedagogique": None,
             "concepts_vises": [],
+            "prerequis_concepts": [],
         }
     if isinstance(entry, dict):
         libelle = _question_libelle_from_ai_entry(entry)
         if not libelle:
             return None
+        niveau_pyramide = normalize_pyramid_level(
+            entry.get("niveau_pyramide") or entry.get("niveau_cognitif")
+        )
+        operation = _ai_optional_text(
+            entry.get("operation_cognitive") or entry.get("niveau_cognitif")
+        )
         return {
             "libelle": libelle,
-            "niveau_cognitif": _ai_optional_text(entry.get("niveau_cognitif")),
+            "niveau_pyramide": niveau_pyramide,
+            "niveau_cognitif": operation,
+            "operation_cognitive": operation,
             "objectif_pedagogique": _ai_optional_text(
                 entry.get("objectif_pedagogique")
             ),
             "concepts_vises": _ai_string_list(entry.get("concepts_vises")),
+            "prerequis_concepts": _ai_string_list(entry.get("prerequis_concepts")),
         }
     return None
 
@@ -618,7 +644,9 @@ async def regroupement_questions_parcours(body: RegroupementQuestionsParcoursPay
         expected_ids = {q["id_question"] for q in questions}
         used_fallback = False
         try:
-            llm_obj = await _mistral_regroupe_questions_par_cours(questions)
+            llm_obj = await _mistral_regroupe_questions_par_cours(
+                questions, lang=normalize_lang(body.lang)
+            )
             familles_dto, updates = _normalize_regroupement_familles_llm(
                 llm_obj,
                 expected_ids,
@@ -791,6 +819,7 @@ async def _persist_domaines_under_theme(
             continue
         if sub_lab.lower() in skip:
             continue
+        sub_niveau = dominants_from_entity(dom) or _ai_optional_text(dom.get("niveau_pyramide"))
         sub_id = await postgres_insert_query(
             """
             INSERT INTO subtheme (
@@ -801,19 +830,23 @@ async def _persist_domaines_under_theme(
                 role_cognitif,
                 transformations_cognitives,
                 prerequis,
-                ouvre_vers
+                ouvre_vers,
+                niveaux_secondaires,
+                profil_questions_attendu
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10::jsonb)
             RETURNING id_subtheme
             """,
             theme_id,
             sub_lab,
             sub_desc,
-            _ai_optional_text(dom.get("niveau_pyramide")),
+            sub_niveau,
             _ai_optional_text(dom.get("role_cognitif")),
             _ai_string_list_for_db(dom.get("transformations_cognitives")),
             _ai_string_list_for_db(dom.get("prerequis")),
             _ai_string_list_for_db(dom.get("ouvre_vers")),
+            _ai_json_for_db(dom.get("niveaux_secondaires")),
+            _ai_json_for_db(dom.get("profil_questions_attendu")),
         )
         for q in _iter_domaine_questions(dom.get("questions")):
             parsed = _parse_ai_question_entry(q)
@@ -825,19 +858,25 @@ async def _persist_domaines_under_theme(
                     libelle,
                     type,
                     id_subtheme,
+                    niveau_pyramide,
                     niveau_cognitif,
+                    operation_cognitive,
                     objectif_pedagogique,
-                    concepts_vises
+                    concepts_vises,
+                    prerequis_concepts
                 )
-                VALUES ($1, $2, $3, $4, $5, $6)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
                 RETURNING id_question
                 """,
                 parsed["libelle"],
                 DEFAULT_AI_QUESTION_TYPE,
                 sub_id,
+                parsed["niveau_pyramide"],
                 parsed["niveau_cognitif"],
+                parsed["operation_cognitive"],
                 parsed["objectif_pedagogique"],
                 _ai_string_list_for_db(parsed.get("concepts_vises")),
+                _ai_string_list_for_db(parsed.get("prerequis_concepts")),
             )
         created += 1
     return created
@@ -859,13 +898,26 @@ async def _persist_generated_theme_from_ai(ai_payload: dict, id_discipline: int)
 
     theme_id = await postgres_insert_query(
         """
-        INSERT INTO theme (label, tagline, description, id_discipline)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO theme (
+            label,
+            tagline,
+            description,
+            role_cognitif,
+            niveau_pyramide,
+            transformation_cognitive,
+            niveaux_secondaires,
+            id_discipline
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)
         RETURNING id_theme
         """,
         label,
         tagline,
         description,
+        _ai_optional_text(ai_payload.get("role_cognitif")),
+        dominants_from_entity(ai_payload) or _ai_optional_text(ai_payload.get("niveau_pyramide")),
+        _ai_optional_text(ai_payload.get("transformation_cognitive")),
+        _ai_json_for_db(ai_payload.get("niveaux_secondaires")),
         id_discipline,
     )
 
@@ -891,6 +943,7 @@ def _theme_row_to_ai_context(row: dict) -> str:
 async def generate_parcours_and_questions_from_theme(
     theme_id: int,
     existing_domaines: Optional[List[dict]] = None,
+    lang: str | None = None,
 ) -> Theme:
     """
     À partir d’un thème déjà en base (ex. squelette issu d’une discipline),
@@ -899,7 +952,15 @@ async def generate_parcours_and_questions_from_theme(
     """
     rows = await postgres_select_query(
         """
-        SELECT id_theme, label, tagline, description
+        SELECT
+            id_theme,
+            label,
+            tagline,
+            description,
+            niveau_pyramide,
+            role_cognitif,
+            transformation_cognitive,
+            niveaux_secondaires
         FROM theme
         WHERE id_theme = $1
         """,
@@ -919,7 +980,18 @@ async def generate_parcours_and_questions_from_theme(
         theme_id, existing_domaines
     )
 
-    raw = await _generate_theme_ai(context, existing_domaines=existing)
+    theme_meta = {
+        "niveau_pyramide": row.get("niveau_pyramide"),
+        "role_cognitif": row.get("role_cognitif"),
+        "transformation_cognitive": row.get("transformation_cognitive"),
+        "niveaux_secondaires": row.get("niveaux_secondaires"),
+    }
+    raw = await _generate_theme_ai(
+        context,
+        existing_domaines=existing,
+        theme_meta=theme_meta,
+        lang=lang,
+    )
     if isinstance(raw, str):
         raise HTTPException(status_code=502, detail=raw)
 
@@ -1467,6 +1539,7 @@ def _normalize_regroupement_familles_llm(
 
 async def _mistral_regroupe_questions_par_cours(
     questions: List[dict],
+    lang: str | None = None,
 ) -> dict:
     """Envoie les questions à Mistral et retourne l'objet JSON parsé."""
     api_key = (os.environ.get("MISTRAL_API_KEY") or "").strip()
@@ -1478,8 +1551,10 @@ async def _mistral_regroupe_questions_par_cours(
 
     questions_json = json.dumps(questions, ensure_ascii=False)
     max_f = REGROUPEMENT_FAMILLES_MAX
+    libelle_lang = "English" if normalize_lang(lang) == "en" else "French"
     prompt = (
-        "Tu es un expert en pédagogie et en analyse de contenus.\n\n"
+        prompt_prefix(lang)
+        + "Tu es un expert en pédagogie et en analyse de contenus.\n\n"
         "Voici les questions d'un même parcours d'apprentissage (JSON : id_question, libelle) :\n"
         f"{questions_json}\n\n"
         "Regroupe ces questions en familles homogènes (thème ou type de compétence), en t'appuyant "
@@ -1491,7 +1566,7 @@ async def _mistral_regroupe_questions_par_cours(
         "exactement une fois dans tout le JSON (aucun doublon entre familles). Utilise exactement les "
         "id_question fournis (entiers) ; n'en invente pas.\n\n"
         "Pour CHAQUE famille, tu dois fournir :\n"
-        '- "libelle" : un titre court et explicite en français (3 à 12 mots) qui résume le thème '
+        f'- "libelle" : un titre court et explicite en {libelle_lang} (3 à 12 mots) qui résume le thème '
         "commun des questions de cette famille ; ce libellé sera stocké en base pour chaque "
         "question du groupe.\n"
         '- "id_questions" : tableau d\'entiers — toujours un tableau JSON (ex. [42] pour une seule '
@@ -1638,10 +1713,15 @@ async def generate_and_persist_theme_from_ai(context: str, id_discipline: int) -
 async def _generate_theme_ai(
     context: str,
     existing_domaines: Optional[List[dict]] = None,
+    theme_meta: Optional[dict] = None,
+    lang: str | None = None,
 ):
-    """Délègue à mistral.theme_mistral (prompt domaines + questions enrichis)."""
+    """Délègue à mistral.theme_mistral (parcours puis questions, appels séparés)."""
     return await mistral_generate_theme_ai(
-        context, existing_domaines=existing_domaines
+        context,
+        existing_domaines=existing_domaines,
+        theme_meta=theme_meta,
+        lang=lang,
     )
 
 
@@ -1681,6 +1761,7 @@ class GenerateParcoursFromThemePayload(PydanticBaseModel):
             "domainesExistants",
         ),
     )
+    lang: Optional[Literal["fr", "en"]] = None
 
 
 @router.post("/generate-parcours-and-questions", response_model=Theme)
@@ -1699,6 +1780,7 @@ async def generate_parcours_and_questions_from_theme_endpoint(
         return await generate_parcours_and_questions_from_theme(
             body.theme_id,
             existing_domaines=existing,
+            lang=normalize_lang(body.lang),
         )
     except HTTPException:
         raise

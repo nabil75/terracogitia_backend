@@ -10,6 +10,7 @@ from routers.discipline import router as discipline_router
 from routers.question  import router as question_router
 from routers.discovering import router as discovering_router
 from routers.auth import router as auth_router
+from routers.advanced_evaluation import router as advanced_evaluation_router
 from database import init_db, close_db
 
 @asynccontextmanager
@@ -56,4 +57,5 @@ app.include_router(discipline_router)
 app.include_router(discovering_router)
 app.include_router(question_router)
 app.include_router(auth_router)
+app.include_router(advanced_evaluation_router)
 

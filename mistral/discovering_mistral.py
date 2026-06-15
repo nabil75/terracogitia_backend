@@ -5,6 +5,8 @@ from typing import Any
 import httpx
 from mistralai.client import Mistral
 
+from .language_prompts import normalize_lang, prompt_prefix
+
 
 MISTRAL_CHAT_TIMEOUT_MS = int(os.environ.get("MISTRAL_CHAT_TIMEOUT_MS", str(5 * 60 * 1000)))
 MISTRAL_DISCOVER_MAX_TOKENS = int(os.environ.get("MISTRAL_DISCOVER_MAX_TOKENS", "8192"))
@@ -90,12 +92,17 @@ async def call_mistral_ordre_logique_json(prompt: str) -> dict[str, Any]:
         raise ValueError("Impossible d'extraire ou de valider le JSON renvoyé par Mistral.") from e
 
 
-async def call_discover_proposition_json(subtheme: str, question: str) -> dict[str, Any]:
+async def call_discover_proposition_json(
+    subtheme: str,
+    question: str,
+    lang: str | None = None,
+) -> dict[str, Any]:
     api_key = (os.environ.get("MISTRAL_API_KEY") or "").strip()
     if not api_key:
         raise ValueError("Variable d'environnement MISTRAL_API_KEY manquante ou vide.")
     client = Mistral(api_key=api_key, timeout_ms=MISTRAL_CHAT_TIMEOUT_MS)
-    prompt = """
+    kw_lang = "English" if normalize_lang(lang) == "en" else "French"
+    prompt = prompt_prefix(lang) + """
                     Tu es un expert en """+subtheme+""". Ton objectif est de proposer une réponse à la question suivante : """+question+""". 
                     Ta proposition doit être construite sur la base du plan suivant 
                     1. Introduction : Présente brièvement le sujet et son importance.
@@ -103,7 +110,7 @@ async def call_discover_proposition_json(subtheme: str, question: str) -> dict[s
                     3. Analyse : Analyse les différents aspects de la question, en mettant en évidence les points clés et les enjeux.
                     4. Conclusion : Résume les points principaux et propose une réponse claire à la question.
                     Ta proposition doit inclure des exemples pertinents pour illustrer tes points.
-                    Pour « Contexte » et « Analyse » : fournis aussi exactement 4 ou 5 mots-clés en français,
+                    Pour « Contexte » et « Analyse » : fournis aussi exactement 4 ou 5 mots-clés en """ + kw_lang + """,
                     concrets et visuels (noms, lieux, objets), utiles pour chercher des photos d’illustration.
                     Les mots-clés ne doivent PAS apparaître dans le texte des sections Contexte/Analyse.
                     Après avoir donné ta réponse, tu dois proposer un exercice pour aider à mieux comprendre la question. L'exercice doit être simple et concret, et doit permettre de mettre en pratique les concepts abordés dans ta réponse.

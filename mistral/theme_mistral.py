@@ -7,15 +7,24 @@ from typing import Any
 import httpx
 from fastapi import HTTPException
 
+from .language_prompts import prompt_prefix
+from .pyramid_prompts import (
+    PYRAMID_CONSTITUTION,
+    dominants_from_entity,
+    normalize_pyramid_level,
+    normalize_pyramid_level_list,
+)
+
 logger = logging.getLogger(__name__)
 
-# Génération parcours + questions (JSON volumineux) : délai lecture HTTP plus long que le reste.
 _GENERATE_PARCOURS_TIMEOUT_SEC = float(
     os.environ.get("MISTRAL_GENERATE_PARCOURS_TIMEOUT_SEC", "600")
 )
-# JSON volumineux : 32k évite la coupure « Unterminated string » observée vers ~68k caractères.
 _GENERATE_PARCOURS_MAX_TOKENS = int(
     os.environ.get("MISTRAL_GENERATE_PARCOURS_MAX_TOKENS", "32768")
+)
+_GENERATE_QUESTIONS_MAX_TOKENS = int(
+    os.environ.get("MISTRAL_GENERATE_QUESTIONS_MAX_TOKENS", "16384")
 )
 _GENERATE_PARCOURS_MAX_RETRIES = int(
     os.environ.get("MISTRAL_GENERATE_PARCOURS_MAX_RETRIES", "4")
@@ -24,12 +33,14 @@ _GENERATE_PARCOURS_RETRY_BASE_SEC = float(
     os.environ.get("MISTRAL_GENERATE_PARCOURS_RETRY_BASE_SEC", "4")
 )
 _MISTRAL_RETRYABLE_HTTP = frozenset({429, 502, 503, 504})
-# Limite par appel Mistral uniquement (pas de plafond sur le nombre total de parcours d'un thème).
 MAX_DOMAINES_PER_GENERATION = int(
     os.environ.get("MISTRAL_MAX_DOMAINES_PER_GENERATION", "5")
 )
 MIN_DOMAINES_PER_GENERATION = int(
     os.environ.get("MISTRAL_MIN_DOMAINES_PER_GENERATION", "4")
+)
+DEFAULT_QUESTIONS_PER_PARCOURS = int(
+    os.environ.get("MISTRAL_DEFAULT_QUESTIONS_PER_PARCOURS", "16")
 )
 
 
@@ -44,7 +55,6 @@ async def _post_mistral_chat_with_retries(
     headers: dict[str, str],
     payload: dict[str, Any],
 ) -> httpx.Response:
-    """Réessaie les erreurs transitoires Mistral (503 unreachable_backend, 429, 502, 504)."""
     attempts = max(1, _GENERATE_PARCOURS_MAX_RETRIES)
     last: httpx.Response | None = None
     for attempt in range(1, attempts + 1):
@@ -121,10 +131,6 @@ def parse_json_object_from_llm_content(content: str) -> dict:
 
 
 def salvage_domaines_from_truncated_llm_json(content: str) -> list[dict]:
-    """
-    Si le JSON est coupé (max_tokens), récupère les objets « domaine » déjà complets
-    dans le tableau ``domaines``.
-    """
     text = strip_markdown_json_fence(content)
     key_idx = text.find('"domaines"')
     if key_idx < 0:
@@ -158,10 +164,6 @@ def salvage_domaines_from_truncated_llm_json(content: str) -> list[dict]:
 def parse_parcours_domaines_from_llm_content(
     content: str,
 ) -> tuple[list[dict], bool]:
-    """
-    Retourne (domaines, partial).
-    ``partial=True`` si le JSON racine était tronqué mais des domaines complets ont été sauvés.
-    """
     try:
         root = parse_json_object_from_llm_content(content)
         raw = root.get("domaines") or []
@@ -173,6 +175,14 @@ def parse_parcours_domaines_from_llm_content(
         return domaines, False
     except (ValueError, json.JSONDecodeError):
         return salvage_domaines_from_truncated_llm_json(content), True
+
+
+def parse_questions_from_llm_content(content: str) -> list[dict]:
+    root = parse_json_object_from_llm_content(content)
+    raw = root.get("questions") or []
+    if not isinstance(raw, list):
+        raise ValueError('"questions" doit être un tableau.')
+    return [q for q in raw if isinstance(q, dict)]
 
 
 def parse_regroupement_llm_response_text(content: str) -> dict:
@@ -302,11 +312,13 @@ def _normalize_existing_domaines_for_prompt(
         if key in seen:
             continue
         seen.add(key)
+        dom = dominants_from_entity(d) or (d.get("niveau_pyramide") or "").strip()
         out.append(
             {
                 "label": lab,
                 "description": (d.get("description") or "").strip(),
-                "niveau_pyramide": (d.get("niveau_pyramide") or "").strip(),
+                "niveau_pyramide": dom or "",
+                "niveau_pyramide_dominant": dom or "",
                 "role_cognitif": (d.get("role_cognitif") or "").strip(),
             }
         )
@@ -314,158 +326,271 @@ def _normalize_existing_domaines_for_prompt(
 
 
 def _domaines_per_generation_instruction(*, complement: bool) -> str:
-    """Consigne de volume pour un seul appel de génération (pas un plafond cumulé sur le thème)."""
     min_d = MIN_DOMAINES_PER_GENERATION
     max_d = MAX_DOMAINES_PER_GENERATION
     if min_d > max_d:
         min_d, max_d = max_d, min_d
     if complement:
         return (
-            f"- Pour CET APPEL uniquement, génère entre {min_d} et {max_d} NOUVEAUX sous-thèmes "
-            f"cognitifs (jamais plus de {max_d} dans le tableau \"domaines\" de cette réponse), "
-            "en complément des parcours déjà listés. Le thème peut compter plus de parcours "
-            "au fil de plusieurs générations successives."
+            f"- Pour CET APPEL uniquement, génère entre {min_d} et {max_d} NOUVEAUX parcours "
+            f'(jamais plus de {max_d} dans le tableau "domaines" de cette réponse), '
+            "en complément des parcours déjà listés."
         )
     return (
-        f"- Pour CET APPEL uniquement, génère entre {min_d} et {max_d} sous-thèmes cognitifs "
-        f"(jamais plus de {max_d} dans le tableau \"domaines\" de cette réponse)."
+        f"- Pour CET APPEL uniquement, génère entre {min_d} et {max_d} parcours "
+        f'(jamais plus de {max_d} dans le tableau "domaines" de cette réponse).'
     )
+
+
+def _default_profil_questions(dominant: str | None, total: int = DEFAULT_QUESTIONS_PER_PARCOURS) -> dict:
+    rep = {level: 0 for level in (
+        "faits_observables",
+        "lois_relations",
+        "schemes_operatoires",
+        "principes_generateurs",
+        "structures_abstraites",
+        "metacadres_theoriques",
+    )}
+    dom = dominant or "faits_observables"
+    rep[dom] = max(1, int(total * 0.4))
+    remaining = total - rep[dom]
+    order = list(rep.keys())
+    idx = order.index(dom) if dom in order else 0
+    for level in order[idx + 1 :]:
+        if remaining <= 0:
+            break
+        take = min(remaining, max(1, remaining // 2))
+        rep[level] = take
+        remaining -= take
+    if remaining > 0:
+        rep[dom] += remaining
+    return {"repartition": rep, "total": total}
+
+
+def _normalize_parcours_domaine(dom: dict) -> dict:
+    """Normalise un domaine IA (parcours) vers les clés persistées."""
+    dominant = dominants_from_entity(dom)
+    secondaires = normalize_pyramid_level_list(dom.get("niveaux_secondaires"))
+    profil = dom.get("profil_questions_attendu")
+    if not isinstance(profil, dict):
+        profil = _default_profil_questions(dominant)
+    rep = profil.get("repartition")
+    if not isinstance(rep, dict):
+        profil = _default_profil_questions(dominant)
+    return {
+        **dom,
+        "label": (dom.get("label") or dom.get("titre") or "").strip(),
+        "description": (dom.get("description") or "").strip(),
+        "niveau_pyramide": dominant,
+        "niveau_pyramide_dominant": dominant,
+        "niveaux_secondaires": secondaires,
+        "profil_questions_attendu": profil,
+    }
+
+
+def _normalize_question_entry(q: dict) -> dict:
+    niveau = normalize_pyramid_level(
+        q.get("niveau_pyramide") or q.get("niveau_cognitif")
+    )
+    return {
+        "libelle": (q.get("libelle") or q.get("label") or "").strip(),
+        "niveau_pyramide": niveau,
+        "niveau_cognitif": (q.get("operation_cognitive") or q.get("niveau_cognitif") or "").strip() or None,
+        "operation_cognitive": (q.get("operation_cognitive") or "").strip() or None,
+        "objectif_pedagogique": (q.get("objectif_pedagogique") or "").strip() or None,
+        "concepts_vises": q.get("concepts_vises") if isinstance(q.get("concepts_vises"), list) else [],
+        "prerequis_concepts": q.get("prerequis_concepts") if isinstance(q.get("prerequis_concepts"), list) else [],
+    }
 
 
 def _build_parcours_generation_prompt(
     context: str,
     existing_domaines: list[dict] | None,
+    theme_meta: dict | None = None,
+    lang: str | None = None,
 ) -> str:
     existing = _normalize_existing_domaines_for_prompt(existing_domaines)
+    meta = theme_meta or {}
 
     if existing:
         existing_json = json.dumps(existing, ensure_ascii=False, indent=2)
         count_line = _domaines_per_generation_instruction(complement=True)
         existing_block = f"""
-        Parcours (domaines) DÉJÀ présents pour ce thème — à ne PAS dupliquer ni reformuler à l'identique.
-        Ne les inclus PAS dans le tableau \"domaines\" de ta réponse :
-        {existing_json}
+Parcours DÉJÀ présents pour ce thème — à ne PAS dupliquer. Ne les inclus PAS dans "domaines" :
+{existing_json}
 
-        {count_line}
-        - Les nouveaux domaines doivent être complémentaires, couvrir d'autres angles de la pyramide des savoirs,
-          et éviter toute redondance sémantique avec les libellés ci-dessus.
-        """
+{count_line}
+- Les nouveaux parcours doivent être complémentaires, couvrir d'autres angles de la pyramide,
+  et éviter toute redondance sémantique avec les libellés ci-dessus.
+"""
     else:
         existing_block = _domaines_per_generation_instruction(complement=False)
 
+    theme_niveau = dominants_from_entity(meta) or meta.get("niveau_pyramide") or "non précisé"
+    theme_role = (meta.get("role_cognitif") or "").strip() or "non précisé"
+    theme_transfo = (meta.get("transformation_cognitive") or "").strip() or "non précisé"
+
     return f"""
-        Tu es un architecte pédagogique spécialisé en cognition computationnelle, systèmes tutoriels intelligents et graphes de connaissances.
+        {prompt_prefix(lang)}
+        Tu es un architecte de parcours d'apprentissage pour Terra Cogitia.
 
-        Ta mission est de transformer un thème de savoir en une architecture cognitive d'apprentissage structurée.
+        {PYRAMID_CONSTITUTION}
 
-        Entrée (label, accroche et description du thème) :
+        THÈME PARENT (contexte) :
         {context}
 
-        Objectif :
-        Construire un arbre de progression pédagogique permettant à un apprenant de maîtriser progressivement le thème en traversant différents niveaux d'abstraction selon la pyramide des savoirs.
+        Métadonnées du thème parent :
+        - niveau_pyramide_dominant : {theme_niveau}
+        - role_cognitif : {theme_role}
+        - transformation_cognitive : {theme_transfo}
 
-        La pyramide des savoirs comporte les niveaux suivants :
-
-        1. faits_observables : phénomènes directement observables, expériences, constats empiriques
-        2. lois_relations : règles, mécanismes, causalités et relations entre les phénomènes
-        3. schemes_operatoires : méthodes, procédures, stratégies et façons de résoudre des problèmes
-        4. principes_generateurs : idées fondamentales, invariants conceptuels, mécanismes profonds expliquant plusieurs méthodes
-        5. structures_abstraites : modèles mentaux, architectures conceptuelles, représentations globales du domaine
-        6. metacadres_theoriques : visions globales, limites des modèles, cadres interprétatifs et liens interdisciplinaires
-
-        Instructions :
         {existing_block}
-        - Chaque sous-thème doit représenter une transformation cognitive importante dans la maîtrise du thème.
-        - Organise les sous-thèmes selon une progression allant du concret vers l'abstrait.
-        - Évite les découpages encyclopédiques classiques.
-        - Chaque sous-thème (domaine) doit pouvoir être étudié indépendamment tout en contribuant à la progression globale.
 
-        Pour chaque NOUVEAU sous-thème, génère :
-        - un label court et évocateur
-        - une description concise, au plus 2 phrases
-        - le niveau dominant de la pyramide auquel le sous-thème peut être rattaché
-        - le rôle cognitif du sous-thème
-        - les transformations cognitives principales
-        - les prérequis éventuels (tu peux référencer des labels de parcours existants)
-        - les sous-thèmes suivants qu'il permet d'ouvrir
-        - entre 16 et 20 questions progressives par sous-thème (jamais plus de 20), avec des types cognitifs variés et des objectifs pédagogiques clairs.
+        OBJECTIF :
+        Générer des parcours (sous-thèmes) qui découpent le thème en unités d'apprentissage autonomes mais ordonnées.
 
-        Contraintes de concision (obligatoires pour tenir en un seul JSON) :
-        - libellé de question : 25 mots maximum
-        - objectif_pedagogique : 15 mots maximum
-        - concepts_vises : 2 à 4 entrées courtes maximum
-        - transformations_cognitives, prerequis, ouvre_vers : libellés courts, 4 éléments maximum chacun
+        RÈGLE CENTRALE :
+        Chaque parcours est ANCRÉ sur UN niveau_pyramide_dominant (clé snake_case exacte). L'ensemble des parcours :
+        - couvre le niveau dominant du thème parent ET au moins un niveau adjacent ;
+        - est ordonné du plus concret au plus abstrait ;
+        - évite deux parcours avec le même niveau_pyramide_dominant ET le même role_cognitif.
 
-        Les questions doivent favoriser le raisonnement, la montée en abstraction et l'esprit critique.
+        Pour CHAQUE parcours (dans "domaines", SANS questions — elles seront générées séparément) :
+        - label : court, évocateur, orienté transformation
+        - description : max 2 phrases
+        - niveau_pyramide_dominant : clé snake_case
+        - niveaux_secondaires : 0 à 2 clés
+        - role_cognitif : une phrase
+        - transformations_cognitives : 2 à 4 verbes courts
+        - prerequis : labels de parcours antérieurs
+        - ouvre_vers : labels de parcours suivants
+        - profil_questions_attendu : objet avec repartition (6 clés snake_case, entiers) et total (16 à 20)
 
-        Chaque question doit contenir : libelle, niveau_cognitif, objectif_pedagogique, concepts_vises.
+        profil_questions_attendu :
+        - total entre 16 et 20
+        - le niveau_pyramide_dominant du parcours reçoit au moins 40 % des questions
+        - au moins 2 niveaux différents par parcours
+        - si niveau_pyramide_dominant >= principes_generateurs : au moins 1 question aux niveaux 5 ou 6
 
-        Réponds uniquement en JSON valide.
+        ANTI-PATTERNS : parcours encyclopédiques sans ancrage pyramide ; pas de tableau "questions" dans cette réponse.
 
-        Respecte STRICTEMENT la structure suivante (uniquement les NOUVEAUX domaines dans \"domaines\") :
+        Réponds UNIQUEMENT en JSON valide :
 
         {{
         "domaines": [
             {{
             "label": "",
             "description": "",
-            "niveau_pyramide": "",
+            "niveau_pyramide_dominant": "faits_observables",
+            "niveaux_secondaires": [],
             "role_cognitif": "",
             "transformations_cognitives": [],
             "prerequis": [],
             "ouvre_vers": [],
-            "questions": [
-                {{
-                "libelle": "",
-                "niveau_cognitif": "",
-                "objectif_pedagogique": "",
-                "concepts_vises": []
-                }}
-            ]
+            "profil_questions_attendu": {{
+                "repartition": {{
+                "faits_observables": 0,
+                "lois_relations": 0,
+                "schemes_operatoires": 0,
+                "principes_generateurs": 0,
+                "structures_abstraites": 0,
+                "metacadres_theoriques": 0
+                }},
+                "total": 16
             }}
-        ]
+            }}
+        ],
+        "controle_pyramide": {{
+            "niveaux_couverts": [],
+            "ordre_respecte": true
+        }}
         }}
     """
 
 
-async def generate_theme_ai(
-    context: str,
-    existing_domaines: list[dict] | None = None,
-) -> dict | str:
+def _build_questions_generation_prompt(parcours: dict, lang: str | None = None) -> str:
+    parcours = _normalize_parcours_domaine(parcours)
+    label = parcours.get("label") or "Parcours"
+    desc = parcours.get("description") or ""
+    dominant = parcours.get("niveau_pyramide_dominant") or "faits_observables"
+    role = parcours.get("role_cognitif") or ""
+    transfo = parcours.get("transformations_cognitives") or []
+    profil = parcours.get("profil_questions_attendu") or _default_profil_questions(dominant)
+    total = int(profil.get("total") or DEFAULT_QUESTIONS_PER_PARCOURS)
+    total = max(12, min(20, total))
+    repartition = profil.get("repartition") or _default_profil_questions(dominant, total)["repartition"]
+    repartition_json = json.dumps(repartition, ensure_ascii=False)
+
+    return f"""
+{prompt_prefix(lang)}
+Tu es un concepteur de questions pour Terra Cogitia. Tu produis des questions qui TESTENT et ENTRAÎNENT un niveau précis de la pyramide des savoirs.
+
+{PYRAMID_CONSTITUTION}
+
+PARCOURS :
+- label : {label}
+- description : {desc}
+- niveau_pyramide_dominant : {dominant}
+- role_cognitif : {role}
+- transformations_cognitives : {json.dumps(transfo, ensure_ascii=False)}
+
+PROFIL CIBLE (répartition obligatoire, total = {total}) :
+{repartition_json}
+
+CALIBRAGE PAR NIVEAU (respecter niveau_pyramide de chaque question) :
+| niveau_pyramide          | types autorisés                          | verbes typiques                            |
+| faits_observables        | constat, observation, exemple concret    | observer, décrire, identifier, reconnaître |
+| lois_relations           | causalité, comparaison, prédiction       | expliquer pourquoi, relier, comparer       |
+| schemes_operatoires      | procédure, méthode, résolution           | appliquer, choisir, exécuter, corriger     |
+| principes_generateurs    | généralisation, invariant, transfert     | généraliser, unifier, transférer           |
+| structures_abstraites    | modélisation, schéma, architecture       | modéliser, structurer, représenter         |
+| metacadres_theoriques    | critique de modèle, limites, cadres      | critiquer, comparer des cadres, intégrer   |
+
+RÈGLES :
+1. Exactement {total} questions, répartition conforme au profil (±1 max sur un niveau, compensé ailleurs).
+2. Ordre : majoritairement du plus concret vers le plus abstrait du profil.
+3. Chaque question : libelle (max 25 mots), niveau_pyramide (clé exacte), operation_cognitive (un verbe), objectif_pedagogique (max 15 mots), concepts_vises (2 à 4), prerequis_concepts (0 à 3).
+4. Au moins 40 % des questions au niveau_pyramide_dominant du parcours ({dominant}).
+
+Réponds UNIQUEMENT en JSON valide :
+
+{{
+  "id_parcours_label": "{label}",
+  "questions": [
+    {{
+      "libelle": "",
+      "niveau_pyramide": "",
+      "operation_cognitive": "",
+      "objectif_pedagogique": "",
+      "concepts_vises": [],
+      "prerequis_concepts": []
+    }}
+  ],
+  "controle_pyramide": {{
+    "repartition_obtenue": {{}},
+    "conforme_profil": true
+  }}
+}}
+"""
+
+
+async def _call_mistral_json(
+    prompt: str,
+    *,
+    max_tokens: int,
+    parse_fn,
+) -> Any:
     api_key = (os.environ.get("MISTRAL_API_KEY") or "").strip()
     if not api_key:
         return "Erreur : variable d'environnement MISTRAL_API_KEY manquante ou vide."
     model = "mistral-large-latest"
     url = "https://api.mistral.ai/v1/chat/completions"
-    # prompt = """
-    #     Génère un thème d'apprentissage original et structuré sur """ + context + """. Le thème doit comporter 8 à 10 piliers de savoir (domaines) couvrant les aspects techniques, théoriques, applicatifs, éthiques et historiques. Chaque domaine doit être formulé de manière à susciter la curiosité et à permettre une exploration approfondie et suivi d'environ 20 questions pour évaluer la connaissance de l'apprenant.
-    #     Les résultats devront se présenter sous la forme d'un fichier JSON strict (aucun texte hors du JSON) au format suivant :
-    #     {
-    #         "titre" : ".....",
-    #         "accroche" : "......",
-    #         "description" : ".......",
-    #         "domaines" :
-    #             [
-    #                 {
-    #                 "titre" : "......",
-    #                 "description" : ".......",
-    #                 "questions" :
-    #                     [
-    #                         "Texte de la question 1",
-    #                         "Texte de la question 2"
-    #                     ]
-    #                 }
-    #             ]
-    #     }
-    #     Le titre du thème et de chaque domaine doit être concis et évocateur. L'accroche du thème est une phrase accrocheuse ; les descriptions font au plus 2 phrases. Les questions évaluent la compréhension des concepts du domaine. Utilise obligatoirement les clés "titre", "accroche", "description", "domaines", et dans chaque domaine "titre", "description", "questions" (tableau de chaînes).
-    # """
-    prompt = _build_parcours_generation_prompt(context, existing_domaines)
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "response_format": {"type": "json_object"},
-        "max_tokens": _GENERATE_PARCOURS_MAX_TOKENS,
+        "max_tokens": max_tokens,
     }
     client_timeout = _httpx_generate_parcours_timeout()
     try:
@@ -484,56 +609,131 @@ async def generate_theme_ai(
                 return f"Erreur : pas de contenu dans la réponse. Réponse : {str(data)[:800]}"
             finish_reason = (choices[0] or {}).get("finish_reason") or ""
             try:
-                domaines, partial = parse_parcours_domaines_from_llm_content(
-                    response_text
-                )
+                return parse_fn(response_text, finish_reason)
             except (ValueError, json.JSONDecodeError) as parse_err:
                 if finish_reason == "length":
                     return (
                         "Erreur : réponse Mistral tronquée (limite de tokens). "
-                        f"Détail : {parse_err}. "
-                        "Réduisez le volume ou augmentez MISTRAL_GENERATE_PARCOURS_MAX_TOKENS."
+                        f"Détail : {parse_err}."
                     )
                 return f"Erreur : impossible d'extraire le JSON ({parse_err})."
-            if partial or finish_reason == "length":
-                logger.warning(
-                    "Génération parcours : JSON partiel — %s domaine(s) récupéré(s), finish_reason=%s",
-                    len(domaines),
-                    finish_reason,
-                )
-            try:
-                response_json = parse_json_object_from_llm_content(response_text)
-            except (ValueError, json.JSONDecodeError):
-                response_json = {}
-            return {
-                "label": (
-                    response_json.get("titre") or response_json.get("label") or ""
-                ).strip(),
-                "tagline": (
-                    response_json.get("accroche") or response_json.get("tagline") or ""
-                ).strip(),
-                "description": (response_json.get("description") or "").strip(),
-                "domaines": domaines,
-                "partial": partial or finish_reason == "length",
-            }
     except httpx.HTTPStatusError as e:
         snippet = (e.response.text or "")[:1200]
         status = e.response.status_code
         extra = ""
         if status in _MISTRAL_RETRYABLE_HTTP:
-            extra = (
-                f" ({_GENERATE_PARCOURS_MAX_RETRIES} tentatives avec backoff). "
-                "Erreur souvent transitoire côté Mistral : réessayez dans quelques minutes. "
-                "Si cela persiste, réduisez le volume demandé dans le prompt ou "
-                "MISTRAL_GENERATE_PARCOURS_MAX_TOKENS."
-            )
+            extra = f" ({_GENERATE_PARCOURS_MAX_RETRIES} tentatives avec backoff)."
         return f"Erreur API Mistral (HTTP {status}) : {snippet}{extra}"
     except httpx.TimeoutException:
         return (
             "Erreur : timeout de la requête vers Mistral (délai dépassé). "
-            f"Délai actuel : {_GENERATE_PARCOURS_TIMEOUT_SEC:.0f} s "
-            "(variable d'environnement MISTRAL_GENERATE_PARCOURS_TIMEOUT_SEC)."
+            f"Délai actuel : {_GENERATE_PARCOURS_TIMEOUT_SEC:.0f} s."
         )
     except Exception as e:
         return f"Erreur : {str(e)}"
 
+
+def _parse_parcours_response(response_text: str, finish_reason: str) -> tuple[list[dict], bool, dict]:
+    domaines, partial = parse_parcours_domaines_from_llm_content(response_text)
+    domaines = [_normalize_parcours_domaine(d) for d in domaines]
+    try:
+        root = parse_json_object_from_llm_content(response_text)
+    except (ValueError, json.JSONDecodeError):
+        root = {}
+    partial = partial or finish_reason == "length"
+    return domaines, partial, root
+
+
+def _parse_questions_response(response_text: str, finish_reason: str) -> list[dict]:
+    questions = parse_questions_from_llm_content(response_text)
+    if finish_reason == "length" and not questions:
+        raise ValueError("Réponse tronquée sans question récupérable.")
+    return [_normalize_question_entry(q) for q in questions if _normalize_question_entry(q).get("libelle")]
+
+
+async def generate_parcours_ai(
+    context: str,
+    existing_domaines: list[dict] | None = None,
+    theme_meta: dict | None = None,
+    lang: str | None = None,
+) -> dict | str:
+    """Génère uniquement les parcours (domaines), sans questions."""
+    prompt = _build_parcours_generation_prompt(
+        context, existing_domaines, theme_meta, lang
+    )
+    result = await _call_mistral_json(
+        prompt,
+        max_tokens=_GENERATE_PARCOURS_MAX_TOKENS,
+        parse_fn=_parse_parcours_response,
+    )
+    if isinstance(result, str):
+        return result
+    domaines, partial, root = result
+    return {
+        "label": (root.get("titre") or root.get("label") or "").strip(),
+        "tagline": (root.get("accroche") or root.get("tagline") or "").strip(),
+        "description": (root.get("description") or "").strip(),
+        "domaines": domaines,
+        "partial": partial,
+    }
+
+
+async def generate_questions_for_parcours_ai(
+    parcours: dict,
+    lang: str | None = None,
+) -> list[dict] | str:
+    """Génère les questions pour un parcours déjà défini (appel Mistral séparé)."""
+    prompt = _build_questions_generation_prompt(parcours, lang)
+    result = await _call_mistral_json(
+        prompt,
+        max_tokens=_GENERATE_QUESTIONS_MAX_TOKENS,
+        parse_fn=lambda text, fr: _parse_questions_response(text, fr),
+    )
+    if isinstance(result, str):
+        return result
+    return result
+
+
+async def generate_theme_ai(
+    context: str,
+    existing_domaines: list[dict] | None = None,
+    theme_meta: dict | None = None,
+    lang: str | None = None,
+) -> dict | str:
+    """
+    Orchestre : 1) génération des parcours, 2) génération des questions par parcours (appels séparés).
+  """
+    parcours_result = await generate_parcours_ai(
+        context,
+        existing_domaines=existing_domaines,
+        theme_meta=theme_meta,
+        lang=lang,
+    )
+    if isinstance(parcours_result, str):
+        return parcours_result
+
+    domaines = parcours_result.get("domaines") or []
+    partial = parcours_result.get("partial", False)
+
+    for dom in domaines:
+        if dom.get("questions"):
+            continue
+        q_result = await generate_questions_for_parcours_ai(dom, lang)
+        if isinstance(q_result, str):
+            logger.warning(
+                "Questions non générées pour parcours %r : %s",
+                dom.get("label"),
+                q_result[:200],
+            )
+            dom["questions"] = []
+            partial = True
+        else:
+            dom["questions"] = q_result
+
+    return {
+        "label": parcours_result.get("label") or "",
+        "tagline": parcours_result.get("tagline") or "",
+        "description": parcours_result.get("description") or "",
+        "domaines": domaines,
+        "partial": partial,
+    }

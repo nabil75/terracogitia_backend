@@ -1,6 +1,6 @@
 
 import os
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from fastapi import APIRouter, HTTPException
 from openai import OpenAI, RateLimitError
@@ -12,6 +12,8 @@ from mistralai.client import Mistral
 from pydantic import BaseModel
 
 import config
+from mistral.evaluation_mistral import evaluate_response_with_mistral
+from mistral.language_prompts import normalize_lang
 from queries import postgres_insert_query, postgres_select_query
 
 router = APIRouter(prefix="/evaluations", tags=["evaluations"])
@@ -22,6 +24,7 @@ class EvaluateResponseRequest(BaseModel):
     subtheme: str
     question: str
     response: str
+    lang: Optional[Literal["fr", "en"]] = None
 
 
 class StoreEvaluationPayload(BaseModel):
@@ -227,93 +230,37 @@ async def get_stats_by_subtheme():
 
 
 @router.get("/evaluate_response/{subtheme}/{question}/{response}")
-async def evaluate_response(subtheme: str, question: str, response: str):
-    return await _evaluate(subtheme, question, response)
+async def evaluate_response(
+    subtheme: str,
+    question: str,
+    response: str,
+    lang: Optional[str] = None,
+):
+    return await _evaluate(subtheme, question, response, lang)
 
 
 @router.post("/evaluate_response")
 async def evaluate_response_post(payload: EvaluateResponseRequest):
-    return await _evaluate(payload.subtheme, payload.question, payload.response)
-
-
-async def _evaluate(subtheme: str, question: str, response: str):
-    api_key = os.environ["MISTRAL_API_KEY"]
-    model = "mistral-large-latest"
-
-    client = Mistral(api_key=api_key)
-
-    prompt = """
-                    Tu es un expert en """+subtheme+""". Ton objectif est d'examiner la réponse d'un participant à une question spécifique : """+question+""". Ton analyse doit être factuelle, claire et pédagogique. Elle doit mettre en évidence les points clés à retenir.
-                    Voici la réponse du participant : """+response+""".
-                    Analyse cette réponse en te basant sur les critères suivants :
-                    1. Pertinence : La réponse est-elle pertinente par rapport à la question posée ?
-                    2. Précision : La réponse est-elle précise et factuellement correcte ?
-                    3. Clarté : La réponse est-elle claire et bien structurée ?
-                    4. Points clés : Quels sont les points clés à retenir de cette réponse ?
-                    Fournis une analyse détaillée en utilisant ces critères, et souligne les éléments importants que le participant devrait retenir pour améliorer sa compréhension du sujet.
-                    En fonction de ton évaluation, donne une note de 0 à 100 à la réponse du participant.
-                    IMPORTANT :
-                    - Réponds avec du JSON STRICT uniquement.
-                    - N'ajoute AUCUN bloc markdown, AUCUN backtick, AUCUN texte avant/après.
-                    - La clé "evaluation" doit être un OBJET structuré (pas une chaîne).
-                    Fournis ta réponse exactement avec ce format JSON :
-                    {
-                        "evaluation": {
-                            "pertinence": {
-                                "analyse": "texte",
-                                "note_partielle": 0-100
-                            },
-                            "precision": {
-                                "analyse": "texte",+
-                            }
-                        },
-                        "note": 0-100,
-                        "synthese": {
-                            "points_forts": ["..."],
-                            "points_faibles": ["..."],
-                            "conseils_pedagogiques": ["..."]
-                        }
-                    }
-                    """
-
-    chat_response = client.chat.complete(
-        model= model,
-        messages = [
-            {
-                "role": "user",
-                "content": prompt
-            },
-        ]
+    return await _evaluate(
+        payload.subtheme,
+        payload.question,
+        payload.response,
+        payload.lang,
     )
 
-    response_text = chat_response.choices[0].message.content
-    # Extraction et affichage du JSON
-    try:
-        start_index = response_text.index("{")
-        end_index = response_text.rindex("}") + 1
-        json_content = response_text[start_index:end_index]
-        response_json = json.loads(json_content)
-        result = {
-            "pertinence": response_json["evaluation"]["pertinence"]["analyse"],
-            "pertinence_note": response_json["evaluation"]["pertinence"]["note_partielle"],
-            "precision": response_json["evaluation"]["precision"]["analyse"],
-            "precision_note": response_json["evaluation"]["precision"]["note_partielle"],
-            "clarte": response_json["evaluation"]["clarte"]["analyse"],
-            "clarte_note": response_json["evaluation"]["clarte"]["note_partielle"],
-            "note": response_json["note"],
-            "synthese_points_forts": response_json["synthese"]["points_forts"],
-            "synthese_points_faibles": response_json["synthese"]["points_faibles"],
-            "synthese_conseils_pedagogiques": response_json["synthese"]["conseils_pedagogiques"]
-        }
-        return result
 
-    except (ValueError, json.JSONDecodeError):
-        content="Erreur : Impossible d'extraire le JSON."
-    except openai.RateLimitError as e:
-        content = "Rate limit reached. Waiting..."
-
-    
-    return content
+async def _evaluate(
+    subtheme: str,
+    question: str,
+    response: str,
+    lang: str | None = None,
+):
+    return await evaluate_response_with_mistral(
+        subtheme,
+        question,
+        response,
+        normalize_lang(lang),
+    )
 
 
 @router.get("/{id_evaluation}")

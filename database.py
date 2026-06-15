@@ -108,6 +108,59 @@ async def init_db():
         await conn.execute(
             "ALTER TABLE theme ADD COLUMN IF NOT EXISTS transformation_cognitive TEXT"
         )
+        await conn.execute(
+            "ALTER TABLE theme ADD COLUMN IF NOT EXISTS niveaux_secondaires JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS niveaux_secondaires JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS profil_questions_attendu JSONB"
+        )
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS niveau_pyramide TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS operation_cognitive TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE question ADD COLUMN IF NOT EXISTS prerequis_concepts JSONB"
+        )
+        await conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS subtheme_session (
+                id_session SERIAL PRIMARY KEY,
+                id_theme INTEGER,
+                id_subtheme INTEGER NOT NULL,
+                entered_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                exited_at TIMESTAMPTZ,
+                duration_seconds INTEGER,
+                source TEXT NOT NULL DEFAULT 'discover'
+            )
+            """
+        )
+        await conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS discover_activity (
+                id_activity SERIAL PRIMARY KEY,
+                id_theme INTEGER,
+                id_subtheme INTEGER,
+                id_question INTEGER,
+                event_type TEXT NOT NULL,
+                id_proposition INTEGER,
+                meta JSONB,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+            """
+        )
+        await conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_subtheme_session_subtheme "
+            "ON subtheme_session (id_subtheme)"
+        )
+        await conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_discover_activity_created "
+            "ON discover_activity (created_at DESC)"
+        )
 
 
 async def close_db():

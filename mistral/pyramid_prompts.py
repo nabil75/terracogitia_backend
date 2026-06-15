@@ -1,0 +1,283 @@
+"""Constitution partagée de la pyramide des savoirs (prompts Mistral Terra Cogitia)."""
+
+from __future__ import annotations
+
+import json
+import re
+import unicodedata
+from typing import Any
+
+PYRAMID_LEVELS: tuple[str, ...] = (
+    "faits_observables",
+    "lois_relations",
+    "schemes_operatoires",
+    "principes_generateurs",
+    "structures_abstraites",
+    "metacadres_theoriques",
+)
+
+TRANSFORMATIONS_COGNITIVES: tuple[str, ...] = (
+    "observer",
+    "comparer",
+    "relier",
+    "resoudre",
+    "generaliser",
+    "modeliser",
+    "critiquer",
+    "integrer",
+)
+
+# Alias français / libellés historiques → clés canoniques snake_case
+_PYRAMID_ALIASES: dict[str, str] = {
+    "faits observables": "faits_observables",
+    "faits_observable": "faits_observables",
+    "lois et relations": "lois_relations",
+    "lois relations": "lois_relations",
+    "schemes operatoires": "schemes_operatoires",
+    "schèmes opératoires": "schemes_operatoires",
+    "schemas operatoires": "schemes_operatoires",
+    "principes generateurs": "principes_generateurs",
+    "principes générateurs": "principes_generateurs",
+    "structures abstraites": "structures_abstraites",
+    "metacadres theoriques": "metacadres_theoriques",
+    "métacadres théoriques": "metacadres_theoriques",
+    "metacadres théoriques": "metacadres_theoriques",
+}
+
+PYRAMID_CONSTITUTION = """
+CONSTITUTION — PYRAMIDE DES SAVOIRS (Terra Cogitia)
+
+Les 6 niveaux sont des clés EXACTES (snake_case, sans variante) :
+
+1. faits_observables
+   — Phénomènes directement observables, expériences, constats empiriques.
+   — Opérations mentales dominantes : percevoir, décrire, reconnaître, constater.
+   — Interdit : généraliser sans observation, invoquer une théorie abstraite.
+
+2. lois_relations
+   — Règles, mécanismes, causalités, relations entre phénomènes.
+   — Opérations : comparer, expliquer pourquoi, relier cause-effet, prédire dans un cadre donné.
+   — Interdit : se limiter à une procédure sans expliciter le mécanisme.
+
+3. schemes_operatoires
+   — Méthodes, procédures, stratégies, résolution de problèmes.
+   — Opérations : appliquer, choisir une méthode, exécuter, dépanner.
+   — Interdit : rester au niveau descriptif sans démarche opératoire.
+
+4. principes_generateurs
+   — Idées fondamentales, invariants, mécanismes profonds unifiant plusieurs méthodes.
+   — Opérations : généraliser, identifier un invariant, transférer à un cas nouveau.
+   — Interdit : lister des recettes sans principe unificateur.
+
+5. structures_abstraites
+   — Modèles mentaux, architectures conceptuelles, représentations globales du domaine.
+   — Opérations : modéliser, structurer, cartographier, représenter un système.
+   — Interdit : confondre avec un simple résumé encyclopédique.
+
+6. metacadres_theoriques
+   — Visions globales, limites des modèles, cadres interprétatifs, liens interdisciplinaires.
+   — Opérations : critiquer un modèle, comparer des cadres, situer les limites, intégrer.
+   — Interdit : dogmatisme, présentation d'un seul cadre comme absolu.
+
+RÈGLES TRANSVERSALES :
+- Progression : concret → abstrait (1 → 6), sauf entité explicitement marquée "revision" ou "synthese".
+- Chaque entité a un niveau_pyramide_dominant (1 clé) et peut lister niveaux_secondaires (0–2 clés).
+- Aucun niveau ne doit être absent de l'ensemble produit si le périmètre le permet.
+- Les questions DOIVENT porter niveau_pyramide (clé exacte), pas un libellé vague.
+""".strip()
+
+
+def _ascii_fold(text: str) -> str:
+    nfd = unicodedata.normalize("NFD", text)
+    return "".join(c for c in nfd if unicodedata.category(c) != "Mn")
+
+
+def normalize_pyramid_level(raw: Any) -> str | None:
+    """Normalise un niveau de pyramide vers une clé snake_case canonique."""
+    if raw is None:
+        return None
+    s = str(raw).strip()
+    if not s:
+        return None
+    if s in PYRAMID_LEVELS:
+        return s
+    lower = _ascii_fold(s.lower())
+    if lower in PYRAMID_LEVELS:
+        return lower
+    if lower in _PYRAMID_ALIASES:
+        return _PYRAMID_ALIASES[lower]
+    compact = re.sub(r"[\s\-]+", "_", lower)
+    compact = re.sub(r"[^\w]", "", compact)
+    if compact in PYRAMID_LEVELS:
+        return compact
+    for alias, key in _PYRAMID_ALIASES.items():
+        if alias.replace(" ", "_") == compact or alias.replace(" ", "") == compact.replace("_", ""):
+            return key
+    return None
+
+
+def normalize_pyramid_level_list(raw: Any) -> list[str]:
+    if raw is None:
+        return []
+    items = raw if isinstance(raw, list) else [raw]
+    out: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        key = normalize_pyramid_level(item)
+        if key and key not in seen:
+            seen.add(key)
+            out.append(key)
+    return out
+
+
+def normalize_transformation_cognitive(raw: Any) -> str | None:
+    if raw is None:
+        return None
+    s = _ascii_fold(str(raw).strip().lower())
+    s = s.replace("é", "e").replace("è", "e").replace("ê", "e")
+    s = re.sub(r"[\s\-]+", "_", s)
+    if s in TRANSFORMATIONS_COGNITIVES:
+        return s
+    if s == "résoudre":
+        return "resoudre"
+    if s == "généraliser":
+        return "generaliser"
+    if s == "modéliser":
+        return "modeliser"
+    return None
+
+
+# Verbes d'opération cognitive (distincts des niveaux pyramide)
+_COGNITIVE_OPERATION_ALIASES: dict[str, str] = {
+    "observe": "observer",
+    "decrire": "decrire",
+    "describe": "decrire",
+    "identifier": "identifier",
+    "reconnaitre": "reconnaitre",
+    "reconnaître": "reconnaitre",
+    "constater": "constater",
+    "percevoir": "percevoir",
+    "expliquer": "expliquer",
+    "explique": "expliquer",
+    "comprendre": "comprendre",
+    "comprehension": "comprendre",
+    "analyser": "analyser",
+    "analyze": "analyser",
+    "relier": "relier",
+    "comparer": "comparer",
+    "predire": "predire",
+    "prédire": "predire",
+    "appliquer": "appliquer",
+    "executer": "executer",
+    "exécuter": "executer",
+    "choisir": "choisir",
+    "corriger": "corriger",
+    "transferer": "transferer",
+    "transférer": "transferer",
+    "unifier": "unifier",
+    "structurer": "structurer",
+    "representer": "representer",
+    "représenter": "representer",
+    "cartographier": "cartographier",
+    "evaluer": "evaluer",
+    "évaluer": "evaluer",
+}
+
+COGNITIVE_OPERATION_FAMILIES: dict[str, tuple[str, ...]] = {
+    "observation": (
+        "observer",
+        "decrire",
+        "identifier",
+        "reconnaitre",
+        "constater",
+        "percevoir",
+    ),
+    "comprehension": (
+        "expliquer",
+        "comprendre",
+        "analyser",
+        "relier",
+        "comparer",
+        "predire",
+    ),
+    "application": (
+        "appliquer",
+        "executer",
+        "resoudre",
+        "choisir",
+        "corriger",
+    ),
+    "generalisation": (
+        "generaliser",
+        "transferer",
+        "unifier",
+    ),
+    "modelisation": (
+        "modeliser",
+        "structurer",
+        "representer",
+        "cartographier",
+    ),
+    "reflexion": (
+        "critiquer",
+        "integrer",
+        "evaluer",
+    ),
+}
+
+_OPERATION_TO_FAMILY: dict[str, str] = {
+    op: family
+    for family, ops in COGNITIVE_OPERATION_FAMILIES.items()
+    for op in ops
+}
+
+
+def normalize_cognitive_operation(raw: Any) -> str | None:
+    """
+    Normalise un verbe d'opération cognitive (operation_cognitive / niveau_cognitif).
+    Ne confond pas avec un niveau de pyramide.
+    """
+    if raw is None:
+        return None
+    if normalize_pyramid_level(raw):
+        return None
+    canonical = normalize_transformation_cognitive(raw)
+    if canonical:
+        return canonical
+    s = _ascii_fold(str(raw).strip().lower())
+    s = re.sub(r"[^\w\s\-]", " ", s)
+    s = re.sub(r"[\s\-]+", "_", s).strip("_")
+    if not s:
+        return None
+    if s in _COGNITIVE_OPERATION_ALIASES:
+        return _COGNITIVE_OPERATION_ALIASES[s]
+    if s in _OPERATION_TO_FAMILY:
+        return s
+    first = s.split("_")[0]
+    if first in _COGNITIVE_OPERATION_ALIASES:
+        return _COGNITIVE_OPERATION_ALIASES[first]
+    if first in _OPERATION_TO_FAMILY:
+        return first
+    if len(first) >= 4 and first not in PYRAMID_LEVELS:
+        return first
+    return None
+
+
+def cognitive_operation_family(operation: str | None) -> str:
+    if not operation:
+        return "other"
+    return _OPERATION_TO_FAMILY.get(operation, "other")
+
+
+def dominants_from_entity(entity: dict) -> str | None:
+    """Extrait le niveau dominant (nouveau ou legacy)."""
+    if not isinstance(entity, dict):
+        return None
+    dom = normalize_pyramid_level(
+        entity.get("niveau_pyramide_dominant") or entity.get("niveau_pyramide")
+    )
+    return dom
+
+
+def json_dumps_safe(obj: Any) -> str:
+    return json.dumps(obj, ensure_ascii=False)

@@ -15,6 +15,8 @@ Schéma SQL attendu (cf. fix_theme_sequences.sql / migration ajoutée) :
         REFERENCES discipline(id_discipline) ON DELETE SET NULL;
 """
 
+import json
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from typing import Any, List, Literal, Optional
@@ -25,6 +27,12 @@ from queries import postgres_select_query
 from mistral.discipline_mistral import (
     generate_list_themes_ai as _generate_list_themes_ai_mistral,
     propose_discipline_from_wish_ai as _propose_discipline_from_wish_ai_mistral,
+)
+from mistral.language_prompts import normalize_lang
+from mistral.pyramid_prompts import (
+    dominants_from_entity,
+    normalize_pyramid_level_list,
+    normalize_transformation_cognitive,
 )
 
 router = APIRouter(prefix="/disciplines", tags=["disciplines"])
@@ -68,11 +76,13 @@ class CreateDisciplinePayload(BaseModel):
     prerequis: List[str] = Field(default_factory=list)
     niveau_estime: NiveauEstime | None = None
     projection: str | None = None
+    lang: Optional[Literal["fr", "en"]] = None
 
 
 class ProposeDisciplineFromWishPayload(BaseModel):
     """Souhait exprimé par l'utilisateur (formulation libre, souvent approximative)."""
     wish: str = Field(..., min_length=3, max_length=4000)
+    lang: Optional[Literal["fr", "en"]] = None
 
 
 class ProposeDisciplineFromWishResult(BaseModel):
@@ -207,7 +217,8 @@ async def propose_discipline_from_wish(payload: ProposeDisciplineFromWishPayload
     L'utilisateur valide ou modifie ces propositions avant `create_discipline`.
     """
     wish = payload.wish.strip()
-    result = await _propose_discipline_from_wish_ai(wish)
+    lang = normalize_lang(payload.lang)
+    result = await _propose_discipline_from_wish_ai(wish, lang)
     if isinstance(result, str):
         raise HTTPException(status_code=502, detail=result)
     return ProposeDisciplineFromWishResult(**result)
@@ -226,7 +237,10 @@ async def create_discipline(payload: CreateDisciplinePayload):
     prerequis = _normalize_label_list(payload.prerequis)
     discipline_description_for_ai = description or ""
 
-    themes_data = await _generate_list_themes_ai(label, discipline_description_for_ai)
+    lang = normalize_lang(payload.lang)
+    themes_data = await _generate_list_themes_ai(
+        label, discipline_description_for_ai, lang
+    )
     if isinstance(themes_data, str):
         raise HTTPException(status_code=502, detail=themes_data)
 
@@ -271,9 +285,10 @@ async def create_discipline(payload: CreateDisciplinePayload):
                         role_cognitif,
                         niveau_pyramide,
                         transformation_cognitive,
+                        niveaux_secondaires,
                         id_discipline
                     )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)
                     RETURNING id_theme
                     """,
                     item["label"],
@@ -282,6 +297,7 @@ async def create_discipline(payload: CreateDisciplinePayload):
                     item.get("role_cognitif") or "",
                     item.get("niveau_pyramide") or "",
                     item.get("transformation_cognitive") or "",
+                    json.dumps(item.get("niveaux_secondaires") or [], ensure_ascii=False),
                     new_id,
                 )
                 created_themes.append(
@@ -292,6 +308,7 @@ async def create_discipline(payload: CreateDisciplinePayload):
                         "description": item.get("description") or "",
                         "role_cognitif": item.get("role_cognitif") or "",
                         "niveau_pyramide": item.get("niveau_pyramide") or "",
+                        "niveaux_secondaires": item.get("niveaux_secondaires") or [],
                         "transformation_cognitive": item.get("transformation_cognitive") or "",
                     }
                 )
@@ -308,8 +325,8 @@ async def create_discipline(payload: CreateDisciplinePayload):
 # Fait: appelle Mistral pour proposer une discipline depuis un souhait.
 # Entrées: `wish` (str).
 # Retour: `dict | str` (résultat ou message d'erreur).
-async def _propose_discipline_from_wish_ai(wish: str) -> dict | str:
-    raw = await _propose_discipline_from_wish_ai_mistral(wish)
+async def _propose_discipline_from_wish_ai(wish: str, lang: str | None = None) -> dict | str:
+    raw = await _propose_discipline_from_wish_ai_mistral(wish, lang)
     if isinstance(raw, str):
         return raw
     label = (raw.get("label") or "").strip()
@@ -335,8 +352,14 @@ async def _propose_discipline_from_wish_ai(wish: str) -> dict | str:
 # Fait: génère la liste de thèmes d'une discipline via Mistral.
 # Entrées: `discipline_label` (str), `discipline_description` (str).
 # Retour: `list[dict] | str` (liste de thèmes ou erreur).
-async def _generate_list_themes_ai(discipline_label: str, discipline_description: str):
-    raw = await _generate_list_themes_ai_mistral(discipline_label, discipline_description)
+async def _generate_list_themes_ai(
+    discipline_label: str,
+    discipline_description: str,
+    lang: str | None = None,
+):
+    raw = await _generate_list_themes_ai_mistral(
+        discipline_label, discipline_description, lang
+    )
     if isinstance(raw, str):
         return raw
     themes_out = []
@@ -345,8 +368,12 @@ async def _generate_list_themes_ai(discipline_label: str, discipline_description
         tagline = (item.get("tagline") or "").strip()
         description = (item.get("description") or "").strip()
         role_cognitif = (item.get("role_cognitif") or "").strip()
-        niveau_pyramide = (item.get("niveau_pyramide") or "").strip()
-        transformation_cognitive = (item.get("transformation_cognitive") or "").strip()
+        niveau_pyramide = dominants_from_entity(item) or ""
+        niveaux_secondaires = normalize_pyramid_level_list(item.get("niveaux_secondaires"))
+        transformation_cognitive = (
+            normalize_transformation_cognitive(item.get("transformation_cognitive"))
+            or (item.get("transformation_cognitive") or "").strip()
+        )
         if label:
             themes_out.append(
                 {
@@ -355,6 +382,7 @@ async def _generate_list_themes_ai(discipline_label: str, discipline_description
                     "description": description or "",
                     "role_cognitif": role_cognitif,
                     "niveau_pyramide": niveau_pyramide,
+                    "niveaux_secondaires": niveaux_secondaires,
                     "transformation_cognitive": transformation_cognitive,
                 }
             )

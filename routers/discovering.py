@@ -5,13 +5,14 @@ import json
 import re
 import unicodedata
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Body, HTTPException, Query, status
 import httpx
 
 from discover_pexels import fetch_pexels_image_links_for_keywords, normalize_keywords_list
 import database
+from mistral.language_prompts import normalize_lang, prompt_prefix
 from mistral.discovering_mistral import (
     MISTRAL_CHAT_TIMEOUT_MS as _MISTRAL_CHAT_TIMEOUT_MS,
     MISTRAL_DISCOVER_MAX_TOKENS as _MISTRAL_DISCOVER_MAX_TOKENS,
@@ -43,6 +44,7 @@ class OrdreLogiqueQuestionIn(BaseModel):
 class OrdreLogiqueQuestionsBody(BaseModel):
     id_subtheme: str
     questions: list[OrdreLogiqueQuestionIn]
+    lang: Optional[Literal["fr", "en"]] = None
 
 
 _ORDRE_LABEL_ID_SUFFIX_RE = re.compile(r"\s*\(id\s*=\s*(\d+)\s*\)\s*$", re.IGNORECASE)
@@ -1359,9 +1361,15 @@ async def upsert_question_proposition_notes(id_question: int, body: Dict[str, An
 # Entrées: `question` (str), `subtheme` (str).
 # Retour: `dict`.
 @router.get("/get_proposition_for_question/{question}/{subtheme}")
-async def get_proposition_for_question(question: str, subtheme: str):
+async def get_proposition_for_question(
+    question: str,
+    subtheme: str,
+    lang: Optional[str] = Query(None, description="UI language: fr or en"),
+):
     try:
-        response_json = await _call_discover_proposition_json_mistral(subtheme, question)
+        response_json = await _call_discover_proposition_json_mistral(
+            subtheme, question, normalize_lang(lang)
+        )
         result = _extract_discover_sections(response_json)
         result = await _attach_pexels_images_to_discover_result(result, response_json)
         required_keys = ["introduction", "Contexte", "Analyse", "Conclusion", "exercice"]
@@ -1383,7 +1391,8 @@ async def get_proposition_for_question(question: str, subtheme: str):
 # Retour: `str`.
 def build_ordre_logique_prompt(body: OrdreLogiqueQuestionsBody) -> str:
     lines = "\n".join(f"- {q.label} (id={q.id})" for q in body.questions)
-    return f"""Tu es un expert en didactique. On te donne la liste ordonnée des questions d’un parcours d’apprentissage.
+    return f"""{prompt_prefix(body.lang)}
+Tu es un expert en didactique. On te donne la liste ordonnée des questions d’un parcours d’apprentissage.
 Pour CHAQUE question (identifiée par son libellé exact « Qn - … »), indique quelles AUTRES questions de la liste
 doivent être comprises ou traitées AVANT celle-ci (prérequis conceptuels). Limite-toi aux questions fournies.
 Si aucun prérequis, renvoie une liste vide.
