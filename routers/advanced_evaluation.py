@@ -34,10 +34,9 @@ VALID_DISCOVER_EVENTS = frozenset(
 
 
 def _resolve_eval_pyramid_level(row: dict[str, Any]) -> str:
-    """Niveau pyramide : question → niveau_cognitif (legacy) → parcours → thème."""
+    """Niveau pyramide : question → parcours → thème."""
     for key in (
         "question_niveau_pyramide",
-        "niveau_cognitif",
         "subtheme_niveau_pyramide",
         "theme_niveau_pyramide",
     ):
@@ -48,7 +47,7 @@ def _resolve_eval_pyramid_level(row: dict[str, Any]) -> str:
 
 
 def _resolve_question_operation(row: dict[str, Any]) -> str | None:
-    for key in ("operation_cognitive", "niveau_cognitif", "op_raw"):
+    for key in ("operation_cognitive", "op_raw"):
         op = normalize_cognitive_operation(row.get(key))
         if op:
             return op
@@ -90,7 +89,6 @@ async def _build_cognitive_discovery_profile(
         f"""
         SELECT
             q.operation_cognitive,
-            q.niveau_cognitif,
             q.niveau_pyramide AS question_niveau_pyramide,
             s.niveau_pyramide AS subtheme_niveau_pyramide,
             t.niveau_pyramide AS theme_niveau_pyramide
@@ -133,9 +131,8 @@ async def _build_cognitive_discovery_profile(
         SELECT
             da.event_type,
             da.created_at,
-            COALESCE(q.operation_cognitive, q.niveau_cognitif) AS op_raw,
+            q.operation_cognitive AS op_raw,
             q.niveau_pyramide AS question_niveau_pyramide,
-            q.niveau_cognitif,
             s.niveau_pyramide AS subtheme_niveau_pyramide,
             t.niveau_pyramide AS theme_niveau_pyramide
         FROM discover_activity da
@@ -486,7 +483,6 @@ async def _build_overview(id_discipline: Optional[int] = None) -> dict:
             e.synthese_conseils_pedagogiques,
             e.date_creation,
             q.niveau_pyramide AS question_niveau_pyramide,
-            q.niveau_cognitif,
             s.niveau_pyramide AS subtheme_niveau_pyramide,
             t.niveau_pyramide AS theme_niveau_pyramide,
             q.operation_cognitive,

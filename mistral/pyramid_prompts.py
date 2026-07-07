@@ -87,6 +87,77 @@ RÈGLES TRANSVERSALES :
 """.strip()
 
 
+# Grille des grandes familles (catégories) par niveau de pyramide.
+# Sert à sélectionner et expliciter les parcours : CHAQUE famille pertinente
+# pour la discipline peut donner lieu à UN parcours ancré sur le niveau correspondant.
+PYRAMID_FAMILIES_GRID = """
+GRILLE DES FAMILLES PAR NIVEAU (pour sélectionner et expliciter les parcours)
+
+Principe : pour le niveau pyramide visé, passe en revue les familles ci-dessous.
+CHAQUE famille pertinente au regard du thème/de la discipline peut donner lieu à UN parcours
+distinct (ancré sur le niveau_pyramide_dominant correspondant). Ignore les familles non pertinentes.
+N'invente pas de famille hors liste ; réutilise ces intitulés comme angle du parcours.
+
+1. faits_observables — grandes catégories universelles :
+   1.01 Entités — objets/éléments qui existent dans le domaine. (Quels sont les objets fondamentaux ?)
+   1.02 Propriétés — caractéristiques observables des entités. (Quelles caractéristiques décrivent une entité ?)
+   1.03 États — situations dans lesquelles une entité peut se trouver. (Dans quels états observables ?)
+   1.04 Événements — changements observables. (Quels événements peuvent survenir ?)
+   1.05 Actions — opérations réalisables. (Que peut-on faire dans ce domaine ?)
+   1.06 Flux — ce qui circule entre les entités. (Qu'est-ce qui transite dans le système ?)
+   1.07 Mesures — indicateurs observables. (Que peut-on mesurer ?)
+   1.08 Artefacts — productions du domaine (documents, logiciels, livrables, modèles…). (Quels artefacts sont produits ?)
+
+2. lois_relations — grandes familles de relations entre faits :
+   2.01 Causalité — un fait produit/influence/empêche un autre. (Qu'est-ce qui provoque ce phénomène ? Ses conséquences ?)
+   2.02 Corrélation — deux faits évoluent ensemble sans causalité démontrée. (Quels phénomènes varient ensemble ?)
+   2.03 Dépendance — un fait n'existe que si un autre est présent. (Quelles conditions d'existence ?)
+   2.04 Composition — un phénomène est constitué d'autres. (Quels éléments constitutifs ?)
+   2.05 Hiérarchie — spécialisation/généralisation d'un fait. (Quelle catégorie englobe ce phénomène ?)
+   2.06 Fonctionnelle — une variation entraîne une variation déterminée d'un autre. (Comment une grandeur influence-t-elle une autre ?)
+   2.07 Temporelle — ordre d'apparition des faits. (Quelle séquence ? Quelles étapes respecter ?)
+   2.08 Équivalence — deux faits expriment la même réalité. (Existe-t-il une autre représentation ?)
+   2.09 Contrainte — un fait limite/encadre un autre. (Quelles limites ? Quels facteurs bloquants ?)
+   2.10 Opposition — deux faits incompatibles/antagonistes. (Quels compromis ? Quels objectifs en conflit ?)
+
+3. schemes_operatoires — façons d'agir efficacement (plus générales qu'une procédure, plus concrètes qu'un principe) :
+   3.01 Observation — recueillir/produire l'information pertinente. (Que regarder ? Que mesurer ? Que distinguer ?)
+   3.02 Diagnostic — comprendre une situation existante. (Que se passe-t-il ? Quelle cause ? Où est le problème ?)
+   3.03 Décomposition — réduire la complexité. (Comment découper le problème ? Quels sous-systèmes ?)
+   3.04 Transformation — faire évoluer un état vers un autre. (Comment modifier le système ? Produire le résultat ?)
+   3.05 Optimisation — améliorer une solution. (Comment faire mieux ? Réduire les coûts ?)
+   3.06 Contrôle et validation — vérifier qualité/conformité. (Est-ce correct ? cohérent ? fiable ?)
+   3.07 Prédiction — anticiper. (Que va-t-il se passer ? Quelles conséquences ?)
+   3.08 Conception — créer ce qui n'existe pas encore. (Comment construire ? Quelle architecture ?)
+   3.09 Décision — choisir entre plusieurs possibilités. (Quelle option ? Quels critères ?)
+   3.10 Intégration — combiner plusieurs éléments en un ensemble cohérent. (Comment articuler des sous-systèmes ? Réconcilier des points de vue ?)
+
+4. principes_generateurs — mécanismes fondamentaux produisant/expliquant les phénomènes et lois :
+   4.01 Conservation — quelque chose est maintenu malgré les transformations. (Qu'est-ce qui reste invariant ?)
+   4.02 Interaction — les phénomènes émergent des interactions entre entités. (Qu'est-ce qui agit sur quoi ?)
+   4.03 Transformation — les objets changent de forme/d'état. (Comment une forme devient-elle une autre ?)
+   4.04 Régulation — le système ajuste son comportement. (Comment le système se maintient-il ?)
+   4.05 Émergence — des propriétés globales apparaissent à partir d'éléments simples. (Comment apparaissent les structures globales ?)
+   4.06 Sélection — parmi plusieurs possibilités, certaines sont retenues. (Comment certaines possibilités sont-elles retenues ?)
+
+5. structures_abstraites — formes organisationnelles profondes sous-tendant faits, lois, méthodes, principes :
+   5.01 Ontologiques — types d'entités fondamentales et propriétés essentielles. (Qu'est-ce qui existe ?)
+   5.02 Relationnelles — liens, dépendances, connexions entre entités. (Qu'est-ce qui est relié ?)
+   5.03 Hiérarchiques — niveaux d'organisation, relations d'inclusion. (Qu'est-ce qui est inclus dans quoi ?)
+   5.04 Dynamiques — transformations, processus, évolutions dans le temps. (Qu'est-ce qui se transforme ?)
+   5.05 Systémiques — ensembles d'éléments en interaction. (Qu'est-ce qui interagit ?)
+   5.06 Émergentes — apparition de propriétés/structures globales non présentes au niveau des composants. (Qu'est-ce qui apparaît à partir des interactions ?)
+
+6. metacadres_theoriques — façons fondamentales d'interpréter, organiser et produire le savoir lui-même :
+   6.01 Ontologiques — ce qui existe. (Que sont les choses ?)
+   6.02 Épistémologiques — ce qui permet de connaître. (Comment savons-nous ?)
+   6.03 Structurels — ce qui organise. (Comment les éléments s'articulent-ils ?)
+   6.04 Dynamiques — ce qui transforme. (Comment les phénomènes évoluent-ils ?)
+   6.05 Pragmatiques — ce qui guide l'action. (Comment agir efficacement ?)
+   6.06 Réflexifs — ce qui examine les cadres eux-mêmes. (Comment examiner nos propres cadres ?)
+""".strip()
+
+
 def _ascii_fold(text: str) -> str:
     nfd = unicodedata.normalize("NFD", text)
     return "".join(c for c in nfd if unicodedata.category(c) != "Mn")

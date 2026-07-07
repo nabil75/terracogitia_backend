@@ -8,12 +8,11 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 from queries import postgres_insert_query, postgres_select_query
+from config import APP_DATA_DIR
 
 router = APIRouter(prefix="/questions", tags=["questions"])
 
-_DEFAULT_GENSIM_QUESTIONS_CSV = (
-    Path(__file__).resolve().parent.parent / "data" / "other_data" / "gensim_questions.csv"
-)
+_DEFAULT_GENSIM_QUESTIONS_CSV = APP_DATA_DIR / "other_data" / "gensim_questions.csv"
 
 
 def _decode_csv_bytes(raw: bytes) -> str:

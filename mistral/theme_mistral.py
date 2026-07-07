@@ -10,6 +10,7 @@ from fastapi import HTTPException
 from .language_prompts import prompt_prefix
 from .pyramid_prompts import (
     PYRAMID_CONSTITUTION,
+    PYRAMID_FAMILIES_GRID,
     dominants_from_entity,
     normalize_pyramid_level,
     normalize_pyramid_level_list,
@@ -40,7 +41,7 @@ MIN_DOMAINES_PER_GENERATION = int(
     os.environ.get("MISTRAL_MIN_DOMAINES_PER_GENERATION", "4")
 )
 DEFAULT_QUESTIONS_PER_PARCOURS = int(
-    os.environ.get("MISTRAL_DEFAULT_QUESTIONS_PER_PARCOURS", "16")
+    os.environ.get("MISTRAL_DEFAULT_QUESTIONS_PER_PARCOURS", "10")
 )
 
 
@@ -395,8 +396,7 @@ def _normalize_question_entry(q: dict) -> dict:
     return {
         "libelle": (q.get("libelle") or q.get("label") or "").strip(),
         "niveau_pyramide": niveau,
-        "niveau_cognitif": (q.get("operation_cognitive") or q.get("niveau_cognitif") or "").strip() or None,
-        "operation_cognitive": (q.get("operation_cognitive") or "").strip() or None,
+        "operation_cognitive": (q.get("operation_cognitive") or q.get("niveau_cognitif") or "").strip() or None,
         "objectif_pedagogique": (q.get("objectif_pedagogique") or "").strip() or None,
         "concepts_vises": q.get("concepts_vises") if isinstance(q.get("concepts_vises"), list) else [],
         "prerequis_concepts": q.get("prerequis_concepts") if isinstance(q.get("prerequis_concepts"), list) else [],
@@ -436,6 +436,8 @@ Parcours DÉJÀ présents pour ce thème — à ne PAS dupliquer. Ne les inclus 
 
         {PYRAMID_CONSTITUTION}
 
+        {PYRAMID_FAMILIES_GRID}
+
         THÈME PARENT (contexte) :
         {context}
 
@@ -455,24 +457,34 @@ Parcours DÉJÀ présents pour ce thème — à ne PAS dupliquer. Ne les inclus 
         - est ordonné du plus concret au plus abstrait ;
         - évite deux parcours avec le même niveau_pyramide_dominant ET le même role_cognitif.
 
+        SÉLECTION DES PARCOURS PAR FAMILLE (utiliser la GRILLE DES FAMILLES ci-dessus) :
+        - Pour chaque niveau pyramide mobilisé, parcours les familles de la grille correspondant à ce niveau
+          (ex. niveau faits_observables → familles Entités, Propriétés, États, Événements, Actions, Flux, Mesures, Artefacts).
+        - Retiens UNIQUEMENT les familles réellement pertinentes pour ce thème/cette discipline : chaque famille
+          pertinente peut donner lieu à UN parcours distinct, ancré sur le niveau correspondant.
+        - Dans le "role_cognitif" de chaque parcours, explicite la famille visée (nom de la famille et question directrice
+          associée) afin de rendre l'angle du parcours clair et non redondant.
+        - N'invente pas de famille hors grille ; n'impose pas une famille non pertinente.
+
         Pour CHAQUE parcours (dans "domaines", SANS questions — elles seront générées séparément) :
         - label : court, évocateur, orienté transformation
         - description : max 2 phrases
         - niveau_pyramide_dominant : clé snake_case
         - niveaux_secondaires : 0 à 2 clés
-        - role_cognitif : une phrase
+        - role_cognitif : une phrase qui nomme la famille visée (cf. grille) et la transformation cognitive attendue
         - transformations_cognitives : 2 à 4 verbes courts
         - prerequis : labels de parcours antérieurs
         - ouvre_vers : labels de parcours suivants
-        - profil_questions_attendu : objet avec repartition (6 clés snake_case, entiers) et total (16 à 20)
+        - profil_questions_attendu : objet avec repartition (6 clés snake_case, entiers) et total (viser une dizaine, 8 à 12)
 
         profil_questions_attendu :
-        - total entre 16 et 20
+        - total entre 8 et 12 (viser une dizaine de questions par parcours)
+        - les questions doivent activer les transformations cognitives conduisant à l'intégration du savoir du parcours
         - le niveau_pyramide_dominant du parcours reçoit au moins 40 % des questions
         - au moins 2 niveaux différents par parcours
         - si niveau_pyramide_dominant >= principes_generateurs : au moins 1 question aux niveaux 5 ou 6
 
-        ANTI-PATTERNS : parcours encyclopédiques sans ancrage pyramide ; pas de tableau "questions" dans cette réponse.
+        ANTI-PATTERNS : parcours encyclopédiques sans ancrage pyramide ; deux parcours sur la même famille ; pas de tableau "questions" dans cette réponse.
 
         Réponds UNIQUEMENT en JSON valide :
 
@@ -483,6 +495,7 @@ Parcours DÉJÀ présents pour ce thème — à ne PAS dupliquer. Ne les inclus 
             "description": "",
             "niveau_pyramide_dominant": "faits_observables",
             "niveaux_secondaires": [],
+            "famille": "",
             "role_cognitif": "",
             "transformations_cognitives": [],
             "prerequis": [],
@@ -496,12 +509,13 @@ Parcours DÉJÀ présents pour ce thème — à ne PAS dupliquer. Ne les inclus 
                 "structures_abstraites": 0,
                 "metacadres_theoriques": 0
                 }},
-                "total": 16
+                "total": 10
             }}
             }}
         ],
         "controle_pyramide": {{
             "niveaux_couverts": [],
+            "familles_couvertes": [],
             "ordre_respecte": true
         }}
         }}
@@ -514,10 +528,11 @@ def _build_questions_generation_prompt(parcours: dict, lang: str | None = None) 
     desc = parcours.get("description") or ""
     dominant = parcours.get("niveau_pyramide_dominant") or "faits_observables"
     role = parcours.get("role_cognitif") or ""
+    famille = (parcours.get("famille") or "").strip() or "non précisée"
     transfo = parcours.get("transformations_cognitives") or []
     profil = parcours.get("profil_questions_attendu") or _default_profil_questions(dominant)
     total = int(profil.get("total") or DEFAULT_QUESTIONS_PER_PARCOURS)
-    total = max(12, min(20, total))
+    total = max(8, min(14, total))
     repartition = profil.get("repartition") or _default_profil_questions(dominant, total)["repartition"]
     repartition_json = json.dumps(repartition, ensure_ascii=False)
 
@@ -531,8 +546,12 @@ PARCOURS :
 - label : {label}
 - description : {desc}
 - niveau_pyramide_dominant : {dominant}
+- famille visée : {famille}
 - role_cognitif : {role}
 - transformations_cognitives : {json.dumps(transfo, ensure_ascii=False)}
+
+Les questions doivent activer les transformations cognitives conduisant à l'intégration du savoir de ce parcours
+(famille visée : {famille}).
 
 PROFIL CIBLE (répartition obligatoire, total = {total}) :
 {repartition_json}

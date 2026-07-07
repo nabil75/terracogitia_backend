@@ -7,12 +7,10 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
-from dotenv import load_dotenv
+import config  # noqa: F401 — charge les variables d'environnement
+from config import APP_DATA_DIR
 
-load_dotenv()
-
-_BACKEND_ROOT = Path(__file__).resolve().parent
-LOCAL_MEDIA_ROOT = _BACKEND_ROOT / "data" / "discover_media"
+LOCAL_MEDIA_ROOT = APP_DATA_DIR / "discover_media"
 
 
 def _s3_configured() -> bool:

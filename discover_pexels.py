@@ -7,11 +7,10 @@ import re
 from typing import Any, Dict, List, Optional
 
 import httpx
-from dotenv import load_dotenv
+
+import config  # noqa: F401 — charge les variables d'environnement
 
 from discover_media_storage import store_discover_image
-
-load_dotenv()
 
 PEXELS_SEARCH_URL = "https://api.pexels.com/v1/search"
 _PEXELS_HEADERS_BASE = {"User-Agent": "TerraCogitia/1.0"}

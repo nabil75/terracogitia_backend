@@ -23,6 +23,7 @@ from mistralai.client import Mistral
 from mistral.language_prompts import normalize_lang, prompt_prefix
 from mistral.pyramid_prompts import dominants_from_entity, normalize_pyramid_level
 from mistral.theme_mistral import generate_theme_ai as mistral_generate_theme_ai
+from config import APP_DATA_DIR
 
 router = APIRouter(prefix="/themes", tags=["themes"])
 # Routes attendues par le front sans préfixe /themes (ex. PUT /subthemes/27)
@@ -33,7 +34,7 @@ DEFAULT_AI_QUESTION_TYPE = "ouverte"
 REGROUPEMENT_FAMILLES_MAX = 6
 
 model = whisper.load_model("base")
-DATA_DIR = Path("data/audio")
+DATA_DIR = APP_DATA_DIR / "audio"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # Modèle Pydantic pour la réponse
@@ -41,6 +42,7 @@ class SubTheme(BaseModel):
     id: int
     label: str
     description: str
+    famille: Optional[str] = None
 
 class Theme(BaseModel):
     id: int
@@ -178,7 +180,6 @@ def _parse_ai_question_entry(entry) -> Optional[dict]:
         return {
             "libelle": libelle,
             "niveau_pyramide": None,
-            "niveau_cognitif": None,
             "operation_cognitive": None,
             "objectif_pedagogique": None,
             "concepts_vises": [],
@@ -197,7 +198,6 @@ def _parse_ai_question_entry(entry) -> Optional[dict]:
         return {
             "libelle": libelle,
             "niveau_pyramide": niveau_pyramide,
-            "niveau_cognitif": operation,
             "operation_cognitive": operation,
             "objectif_pedagogique": _ai_optional_text(
                 entry.get("objectif_pedagogique")
@@ -410,7 +410,8 @@ async def get_all_themes(id_discipline: Optional[int] = None):
                                 json_build_object(
                                     'id', s.id_subtheme,
                                     'label', s.label,
-                                    'description', s.description
+                                    'description', s.description,
+                                    'famille', s.famille
                                 )
                             ) FILTER (WHERE s.id_subtheme IS NOT NULL),
                             '[]'::json
@@ -436,7 +437,8 @@ async def get_all_themes(id_discipline: Optional[int] = None):
                                 json_build_object(
                                     'id', s.id_subtheme,
                                     'label', s.label,
-                                    'description', s.description
+                                    'description', s.description,
+                                    'famille', s.famille
                                 )
                             ) FILTER (WHERE s.id_subtheme IS NOT NULL),
                             '[]'::json
@@ -832,9 +834,10 @@ async def _persist_domaines_under_theme(
                 prerequis,
                 ouvre_vers,
                 niveaux_secondaires,
-                profil_questions_attendu
+                profil_questions_attendu,
+                famille
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10::jsonb)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10::jsonb, $11)
             RETURNING id_subtheme
             """,
             theme_id,
@@ -847,6 +850,7 @@ async def _persist_domaines_under_theme(
             _ai_string_list_for_db(dom.get("ouvre_vers")),
             _ai_json_for_db(dom.get("niveaux_secondaires")),
             _ai_json_for_db(dom.get("profil_questions_attendu")),
+            _ai_optional_text(dom.get("famille")),
         )
         for q in _iter_domaine_questions(dom.get("questions")):
             parsed = _parse_ai_question_entry(q)
@@ -859,20 +863,18 @@ async def _persist_domaines_under_theme(
                     type,
                     id_subtheme,
                     niveau_pyramide,
-                    niveau_cognitif,
                     operation_cognitive,
                     objectif_pedagogique,
                     concepts_vises,
                     prerequis_concepts
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
+                VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb)
                 RETURNING id_question
                 """,
                 parsed["libelle"],
                 DEFAULT_AI_QUESTION_TYPE,
                 sub_id,
                 parsed["niveau_pyramide"],
-                parsed["niveau_cognitif"],
                 parsed["operation_cognitive"],
                 parsed["objectif_pedagogique"],
                 _ai_string_list_for_db(parsed.get("concepts_vises")),

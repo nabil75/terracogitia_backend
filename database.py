@@ -41,9 +41,6 @@ async def init_db():
             "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS ouvre_vers JSONB"
         )
         await conn.execute(
-            "ALTER TABLE question ADD COLUMN IF NOT EXISTS niveau_cognitif TEXT"
-        )
-        await conn.execute(
             "ALTER TABLE question ADD COLUMN IF NOT EXISTS objectif_pedagogique TEXT"
         )
         await conn.execute(
@@ -118,6 +115,9 @@ async def init_db():
             "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS profil_questions_attendu JSONB"
         )
         await conn.execute(
+            "ALTER TABLE subtheme ADD COLUMN IF NOT EXISTS famille TEXT"
+        )
+        await conn.execute(
             "ALTER TABLE question ADD COLUMN IF NOT EXISTS niveau_pyramide TEXT"
         )
         await conn.execute(
@@ -125,6 +125,24 @@ async def init_db():
         )
         await conn.execute(
             "ALTER TABLE question ADD COLUMN IF NOT EXISTS prerequis_concepts JSONB"
+        )
+        # Consolidation : `niveau_cognitif` (legacy) fusionnée dans `operation_cognitive`
+        # puis supprimée. Idempotent : ne s'exécute que si la colonne existe encore.
+        await conn.execute(
+            """
+            DO $$
+            BEGIN
+                IF EXISTS (
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name = 'question' AND column_name = 'niveau_cognitif'
+                ) THEN
+                    UPDATE question
+                    SET operation_cognitive = niveau_cognitif
+                    WHERE operation_cognitive IS NULL AND niveau_cognitif IS NOT NULL;
+                    ALTER TABLE question DROP COLUMN niveau_cognitif;
+                END IF;
+            END $$;
+            """
         )
         await conn.execute(
             """

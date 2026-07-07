@@ -1,6 +1,9 @@
 ﻿from contextlib import asynccontextmanager
 from pathlib import Path
 
+import config
+from config import APP_DATA_DIR
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -27,7 +30,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-_discover_media_dir = Path(__file__).resolve().parent / "data" / "discover_media"
+_discover_media_dir = APP_DATA_DIR / "discover_media"
 _discover_media_dir.mkdir(parents=True, exist_ok=True)
 app.mount(
     "/media/discover",
