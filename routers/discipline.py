@@ -396,9 +396,10 @@ class KnowledgeOverviewProposition(BaseModel):
     date_creation: Optional[str] = None
 
 
-class KnowledgeOverviewEvaluation(BaseModel):
-    id_evaluation: int
-    date_creation: Optional[str] = None
+class KnowledgeOverviewQuestion(BaseModel):
+    id_question: int
+    label: str
+    propositions: List[KnowledgeOverviewProposition] = Field(default_factory=list)
 
 
 def _format_date_creation(value: Any) -> Optional[str]:
@@ -411,13 +412,6 @@ def _format_date_creation(value: Any) -> Optional[str]:
         return value.isoformat()
     text = str(value).strip()
     return text or None
-
-
-class KnowledgeOverviewQuestion(BaseModel):
-    id_question: int
-    label: str
-    propositions: List[KnowledgeOverviewProposition] = Field(default_factory=list)
-    evaluations: List[KnowledgeOverviewEvaluation] = Field(default_factory=list)
 
 
 class KnowledgeOverviewSubTheme(BaseModel):
@@ -441,8 +435,8 @@ class KnowledgeOverviewDiscipline(BaseModel):
 @router.get("/knowledge_overview", response_model=List[KnowledgeOverviewDiscipline])
 async def get_knowledge_overview():
     """
-    Arborescence complète discipline → thème → parcours → question → propositions / évaluations.
-    Pour propositions et évaluations, seul `date_creation` est exposé pour l'instant.
+    Arborescence complète discipline → thème → parcours → question → propositions.
+    Pour les propositions, seul `date_creation` est exposé pour l'instant.
     """
     try:
         discipline_rows = await postgres_select_query(
@@ -480,13 +474,6 @@ async def get_knowledge_overview():
             ORDER BY id_question, id_proposition DESC
             """
         )
-        evaluation_rows = await postgres_select_query(
-            """
-            SELECT id_evaluation, id_question, date_creation
-            FROM evaluation
-            ORDER BY id_question, id_evaluation DESC
-            """
-        )
     except Exception as e:
         print("ERROR get_knowledge_overview:", e)
         raise HTTPException(status_code=500, detail=str(e))
@@ -497,16 +484,6 @@ async def get_knowledge_overview():
         propositions_by_question.setdefault(qid, []).append(
             KnowledgeOverviewProposition(
                 id_proposition=int(row["id_proposition"]),
-                date_creation=_format_date_creation(row.get("date_creation")),
-            )
-        )
-
-    evaluations_by_question: dict[int, list] = {}
-    for row in evaluation_rows:
-        qid = int(row["id_question"])
-        evaluations_by_question.setdefault(qid, []).append(
-            KnowledgeOverviewEvaluation(
-                id_evaluation=int(row["id_evaluation"]),
                 date_creation=_format_date_creation(row.get("date_creation")),
             )
         )
@@ -530,7 +507,6 @@ async def get_knowledge_overview():
                 id_question=qid,
                 label=label,
                 propositions=propositions_by_question.get(qid, []),
-                evaluations=evaluations_by_question.get(qid, []),
             )
         )
 

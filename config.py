@@ -43,3 +43,24 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 if not OPENAI_API_KEY:
     raise ValueError("La clé OPENAI_API_KEY est manquante dans le fichier .env")
+
+
+# --- Authentification Microsoft (OAuth 2.0 / OpenID Connect) ---------------
+# Ces valeurs sont optionnelles au démarrage : leur absence n'empêche pas le
+# lancement de l'app, mais les endpoints /auth/microsoft/* renverront 500 tant
+# que la configuration est incomplète.
+MICROSOFT_TENANT_ID = os.getenv("MICROSOFT_TENANT_ID", "common")
+MICROSOFT_CLIENT_ID = os.getenv("MICROSOFT_CLIENT_ID")
+MICROSOFT_CLIENT_SECRET = os.getenv("MICROSOFT_CLIENT_SECRET")
+MICROSOFT_REDIRECT_URI = os.getenv("MICROSOFT_REDIRECT_URI")
+
+# URLs frontend de retour après le flux OAuth.
+APP_POST_LOGIN_REDIRECT = os.getenv("APP_POST_LOGIN_REDIRECT", "http://localhost:4200/home")
+APP_LOGIN_URL = os.getenv("APP_LOGIN_URL", "http://localhost:4200/login")
+
+# --- Session applicative (cookie signé sans état) --------------------------
+SESSION_SECRET = os.getenv("SESSION_SECRET")
+SESSION_TTL_HOURS = int(os.getenv("SESSION_TTL_HOURS", "8"))
+SESSION_COOKIE_NAME = os.getenv("SESSION_COOKIE_NAME", "tc_session")
+# `Secure` par défaut ; désactivable en dev via SESSION_COOKIE_SECURE=false.
+SESSION_COOKIE_SECURE = (os.getenv("SESSION_COOKIE_SECURE", "true").strip().lower() != "false")

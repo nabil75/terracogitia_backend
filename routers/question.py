@@ -47,55 +47,55 @@ def _has_dessin_value(raw: Any) -> bool:
     return bool(val)
 
 
-class QuestionDessinPayload(BaseModel):
+class ObjectDessinPayload(BaseModel):
     dessin: dict[str, Any] = Field(..., description="JSON Fabric.js (canvas.toObject())")
 
 
-class QuestionDessinResponse(BaseModel):
-    id_question: int
+class ObjectDessinResponse(BaseModel):
+    id_objet: int
     dessin: Optional[dict[str, Any]] = None
     has_dessin: bool = False
 
 
-async def _ensure_question_exists(id_question: int) -> None:
+async def _ensure_object_exists(id_objet: int) -> None:
     rows = await postgres_select_query(
         "SELECT 1 FROM question WHERE id_question = $1 LIMIT 1",
-        id_question,
+        id_objet,
     )
     if not rows:
-        raise HTTPException(status_code=404, detail="Question introuvable")
+        raise HTTPException(status_code=404, detail="Objet introuvable")
 
 
-@router.get("/{id_question}/dessin", response_model=QuestionDessinResponse)
-async def get_question_dessin(id_question: int):
-    """Retourne le dessin JSONB associé à une question (Fabric.js)."""
+@router.get("/{id_objet}/dessin", response_model=ObjectDessinResponse)
+async def get_object_dessin(id_objet: int):
+    """Retourne le dessin JSONB associé à un objet (Fabric.js)."""
     rows = await postgres_select_query(
         """
         SELECT id_question, dessin
         FROM question
         WHERE id_question = $1
         """,
-        id_question,
+        id_objet,
     )
     if not rows:
-        raise HTTPException(status_code=404, detail="Question introuvable")
+        raise HTTPException(status_code=404, detail="Objet introuvable")
     row = dict(rows[0])
     dessin = _normalize_jsonb_value(row.get("dessin"))
     if isinstance(dessin, dict):
         pass
     else:
         dessin = None
-    return QuestionDessinResponse(
-        id_question=id_question,
+    return ObjectDessinResponse(
+        id_objet=id_objet,
         dessin=dessin,
         has_dessin=_has_dessin_value(dessin),
     )
 
 
-@router.put("/{id_question}/dessin", response_model=QuestionDessinResponse)
-async def save_question_dessin(id_question: int, body: QuestionDessinPayload):
-    """Enregistre ou remplace le dessin d'une question."""
-    await _ensure_question_exists(id_question)
+@router.put("/{id_objet}/dessin", response_model=ObjectDessinResponse)
+async def save_object_dessin(id_objet: int, body: ObjectDessinPayload):
+    """Enregistre ou remplace le dessin d'un objet."""
+    await _ensure_object_exists(id_objet)
     if not isinstance(body.dessin, dict) or not body.dessin:
         raise HTTPException(status_code=400, detail="Corps « dessin » JSON invalide ou vide.")
     rows = await postgres_select_query(
@@ -106,22 +106,22 @@ async def save_question_dessin(id_question: int, body: QuestionDessinPayload):
         RETURNING id_question, dessin
         """,
         json.dumps(body.dessin, ensure_ascii=False),
-        id_question,
+        id_objet,
     )
     if not rows:
-        raise HTTPException(status_code=404, detail="Question introuvable")
+        raise HTTPException(status_code=404, detail="Objet introuvable")
     dessin = _normalize_jsonb_value(dict(rows[0]).get("dessin"))
-    return QuestionDessinResponse(
-        id_question=id_question,
+    return ObjectDessinResponse(
+        id_objet=id_objet,
         dessin=dessin if isinstance(dessin, dict) else body.dessin,
         has_dessin=True,
     )
 
 
-@router.delete("/{id_question}/dessin", response_model=QuestionDessinResponse)
-async def delete_question_dessin(id_question: int):
-    """Supprime le dessin associé à une question."""
-    await _ensure_question_exists(id_question)
+@router.delete("/{id_objet}/dessin", response_model=ObjectDessinResponse)
+async def delete_object_dessin(id_objet: int):
+    """Supprime le dessin associé à un objet."""
+    await _ensure_object_exists(id_objet)
     rows = await postgres_select_query(
         """
         UPDATE question
@@ -129,12 +129,12 @@ async def delete_question_dessin(id_question: int):
         WHERE id_question = $1
         RETURNING id_question, dessin
         """,
-        id_question,
+        id_objet,
     )
     if not rows:
-        raise HTTPException(status_code=404, detail="Question introuvable")
-    return QuestionDessinResponse(
-        id_question=id_question,
+        raise HTTPException(status_code=404, detail="Objet introuvable")
+    return ObjectDessinResponse(
+        id_objet=id_objet,
         dessin=None,
         has_dessin=False,
     )
@@ -176,7 +176,7 @@ async def insert_gensim_questions_from_csv(
             """,
             libelle,
             question_type,
-            163,
+            id_subtheme if id_subtheme is not None else 163,
         )
         inserted += 1
 

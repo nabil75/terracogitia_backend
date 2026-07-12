@@ -1,0 +1,33 @@
+schema: spec-driven
+
+context: |
+  Produit : Terra Cogitia — plateforme éducative bilingue (FR/EN) qui génère du
+  contenu pédagogique avec le LLM Mistral, structuré par la « pyramide des savoirs »
+  (6 niveaux : faits_observables, lois_relations, schemes_operatoires,
+  principes_generateurs, structures_abstraites, metacadres_theoriques).
+
+  Ce dépôt = BACKEND.
+  Tech stack : Python, FastAPI, asyncpg/PostgreSQL (base `terracogitia`), SDK Mistral,
+  Whisper (transcription audio), Pexels (images Discover), stockage média local ou S3.
+
+  Conventions :
+  - Aucune authentification côté serveur : les routes sont publiques ; `/auth/login`
+    ne délivre aucun token/session (le frontend gère l'identité localement).
+  - Langue de génération pilotée par un champ `lang` ("fr" | "en") normalisé via
+    `mistral/language_prompts.py` (défaut : français).
+  - Les clés JSON techniques et les clés de niveau pyramide restent en snake_case.
+  - Les échecs Mistral renvoient généralement HTTP 502 (sauf /evaluations qui peut
+    renvoyer 200 + chaîne d'erreur — comportement historique).
+
+  Les specs de ce dossier décrivent le comportement observable EXISTANT (référence),
+  pas un plan d'implémentation.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours

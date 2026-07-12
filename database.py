@@ -16,6 +16,23 @@ async def init_db():
     pool = await asyncpg.create_pool(**db_params)
     # Schéma attendu par POST /themes/regroupement_questions_parcours.
     async with pool.acquire() as conn:
+        # Authentification Microsoft : colonnes de liaison de compte + mot de passe optionnel.
+        await conn.execute(
+            "ALTER TABLE users ALTER COLUMN hashed_password DROP NOT NULL"
+        )
+        await conn.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS azure_oid TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_provider TEXT DEFAULT 'local'"
+        )
+        await conn.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name TEXT"
+        )
+        await conn.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_azure_oid "
+            "ON users (azure_oid) WHERE azure_oid IS NOT NULL"
+        )
         await conn.execute(
             "ALTER TABLE question ADD COLUMN IF NOT EXISTS groupe INTEGER"
         )
@@ -144,41 +161,11 @@ async def init_db():
             END $$;
             """
         )
-        await conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS subtheme_session (
-                id_session SERIAL PRIMARY KEY,
-                id_theme INTEGER,
-                id_subtheme INTEGER NOT NULL,
-                entered_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                exited_at TIMESTAMPTZ,
-                duration_seconds INTEGER,
-                source TEXT NOT NULL DEFAULT 'discover'
-            )
-            """
-        )
-        await conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS discover_activity (
-                id_activity SERIAL PRIMARY KEY,
-                id_theme INTEGER,
-                id_subtheme INTEGER,
-                id_question INTEGER,
-                event_type TEXT NOT NULL,
-                id_proposition INTEGER,
-                meta JSONB,
-                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-            )
-            """
-        )
-        await conn.execute(
-            "CREATE INDEX IF NOT EXISTS idx_subtheme_session_subtheme "
-            "ON subtheme_session (id_subtheme)"
-        )
-        await conn.execute(
-            "CREATE INDEX IF NOT EXISTS idx_discover_activity_created "
-            "ON discover_activity (created_at DESC)"
-        )
+        # Suppression des tables legacy d'évaluation par questions (remplacées par défis).
+        await conn.execute("DROP TABLE IF EXISTS discover_activity CASCADE")
+        await conn.execute("DROP TABLE IF EXISTS subtheme_session CASCADE")
+        await conn.execute("DROP TABLE IF EXISTS evaluation CASCADE")
+        await conn.execute("DROP TABLE IF EXISTS reponse_evaluation CASCADE")
 
 
 async def close_db():

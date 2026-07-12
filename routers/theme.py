@@ -605,15 +605,8 @@ async def getQuestionsBySubTheme(subtheme_id: int):
     try:
         rows = await postgres_select_query(
             """
-            SELECT
-                q.*,
-                COALESCE(ev.nombre_evaluations, 0)::int AS nombre_evaluations
+            SELECT q.*
             FROM question q
-            LEFT JOIN (
-                SELECT id_question, COUNT(*) AS nombre_evaluations
-                FROM evaluation
-                GROUP BY id_question
-            ) ev ON ev.id_question = q.id_question
             WHERE q.id_subtheme = $1
             ORDER BY q.id_question
             """,
