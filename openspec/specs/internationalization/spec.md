@@ -6,7 +6,7 @@ UI courante. Le choix de langue est transmis par les endpoints via un champ opti
 `lang` ("fr" | "en"), normalisé et injecté en préambule des prompts.
 
 Fichier central : `mistral/language_prompts.py` (`normalize_lang`,
-`content_language_block`, `prompt_prefix`).
+`content_language_block`, `prompt_prefix`, `prose_formatting_block`).
 
 ## Requirements
 
@@ -44,11 +44,21 @@ pyramide.
 - AND les mots-clés de recherche d'images sont demandés en anglais
 - AND les clés JSON techniques et les clés de niveau pyramide restent en snake_case
 
+### Requirement: Mise en forme du texte dans les propositions Discover
+Le système SHALL injecter `prose_formatting_block(lang)` dans le prompt de génération de
+proposition Discover afin que Mistral structure le texte utilisateur (paragraphes, listes
+numérotées, puces) de façon exploitable par le rendu HTML côté front.
+
+#### Scenario: Consignes de formatage en anglais
+- GIVEN `lang` normalisé `"en"`
+- WHEN le prompt de proposition Discover est construit
+- THEN le bloc impose des sauts de ligne doubles entre idées et des préfixes `1. `, `2. `, `- `
+
 ### Requirement: Propagation de la langue aux endpoints IA
 Le système SHALL accepter un champ `lang` optionnel sur les endpoints de génération IA
 (proposition de discipline, création de discipline, génération de parcours et questions,
-regroupement de questions, proposition Discover, ordre logique des questions, évaluation
-de réponse, insights d'évaluation avancée) et l'utiliser pour la langue du contenu généré.
+regroupement de questions, proposition Discover, ordre logique des questions, génération
+d'exercices de défi) et l'utiliser pour la langue du contenu généré.
 
 #### Scenario: Endpoint recevant lang=en
 - GIVEN un endpoint de génération IA appelé avec `lang: "en"`

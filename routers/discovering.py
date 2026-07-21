@@ -8,9 +8,6 @@ from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Body, HTTPException, Query, status
-import httpx
-
-from discover_pexels import fetch_pexels_image_links_for_keywords, normalize_keywords_list
 import database
 from mistral.language_prompts import normalize_lang, prompt_prefix
 from mistral.discovering_mistral import (
@@ -999,20 +996,8 @@ def _canonical_section_bucket(normalized_key: str) -> Optional[str]:
         return "analyse"
     if normalized_key in ("conclusion",):
         return "conclusion"
-    if normalized_key in (
-        "exercice",
-        "exercise",
-        "activite",
-        "activity",
-        "tp",
-        "travailpratique",
-        "travail_pratique",
-    ):
-        return "exercice"
     if "analys" in normalized_key:
         return "analyse"
-    if "exercic" in normalized_key or "exercise" in normalized_key:
-        return "exercice"
     return None
 
 
@@ -1051,70 +1036,6 @@ def _is_discover_metadata_field_key(normalized_key: str) -> bool:
     )
 
 
-# Fait: extrait des mots-clés d'images pour une section Discover.
-# Entrées: `response_json` (dict), `section` (str).
-# Retour: `List[str]`.
-def _extract_section_keywords(response_json: dict, section: str) -> List[str]:
-    """Extrait 4–5 mots-clés Mistral pour contexte ou analyse."""
-    if not isinstance(response_json, dict):
-        return []
-    aliases = {
-        "contexte": (
-            "contexte_mots_cles",
-            "contexteMotsCles",
-            "Contexte_mots_cles",
-            "contexte_mots_cle",
-            "contexteMotsCle",
-            "mots_cles_contexte",
-            "contexte_keywords",
-            "contexteKeywords",
-        ),
-        "analyse": (
-            "analyse_mots_cles",
-            "analyseMotsCles",
-            "Analyse_mots_cles",
-            "analyse_mots_cle",
-            "analyseMotsCle",
-            "mots_cles_analyse",
-            "analyse_keywords",
-            "analyseKeywords",
-        ),
-    }
-    for k in aliases.get(section, ()):
-        if k in response_json:
-            return normalize_keywords_list(response_json[k])
-    target = f"{section}motscles"
-    for raw_k, raw_v in response_json.items():
-        if _normalize_field_key(raw_k) == target:
-            return normalize_keywords_list(raw_v)
-    return []
-
-
-# Fait: enrichit la réponse Discover avec des liens images Pexels.
-# Entrées: `response_json` (dict), `lang` (str).
-# Retour: `dict`.
-async def _attach_pexels_images_to_discover_result(
-    result: dict, response_json: dict
-) -> dict:
-    """Enrichit la réponse avec les liens images Pexels stockés (CDN/S3 ou local)."""
-    contexte_kw = _extract_section_keywords(response_json, "contexte")
-    analyse_kw = _extract_section_keywords(response_json, "analyse")
-
-    try:
-        contexte_liens = await fetch_pexels_image_links_for_keywords(contexte_kw)
-        analyse_liens = await fetch_pexels_image_links_for_keywords(analyse_kw)
-    except ValueError as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
-
-    result["contexte_mots_cles"] = contexte_kw
-    result["analyse_mots_cles"] = analyse_kw
-    result["contexte_liens_images"] = contexte_liens
-    result["analyse_liens_images"] = analyse_liens
-    result["contexteLiensImages"] = contexte_liens
-    result["analyseLiensImages"] = analyse_liens
-    return result
-
-
 # Fait: extrait et structure les sections d'une réponse Discover.
 # Entrées: `response_json` (dict).
 # Retour: `dict`.
@@ -1124,7 +1045,6 @@ def _extract_discover_sections(response_json: dict) -> dict:
         "contexte": [],
         "analyse": [],
         "conclusion": [],
-        "exercice": [],
     }
     _accumulate_sections_recursive(response_json, buckets)
 
@@ -1132,7 +1052,6 @@ def _extract_discover_sections(response_json: dict) -> dict:
     contexte = "\n\n".join(buckets["contexte"]).strip()
     analyse = "\n\n".join(buckets["analyse"]).strip()
     conclusion = "\n\n".join(buckets["conclusion"]).strip()
-    exercice = "\n\n".join(buckets["exercice"]).strip()
 
     return {
         "introduction": introduction,
@@ -1140,8 +1059,6 @@ def _extract_discover_sections(response_json: dict) -> dict:
         "Analyse": analyse,
         "analyse": analyse,
         "Conclusion": conclusion,
-        "exercice": exercice,
-        "Exercice": exercice,
     }
 
 
@@ -1371,13 +1288,12 @@ async def get_proposition_for_question(
             subtheme, question, normalize_lang(lang)
         )
         result = _extract_discover_sections(response_json)
-        result = await _attach_pexels_images_to_discover_result(result, response_json)
-        required_keys = ["introduction", "Contexte", "Analyse", "Conclusion", "exercice"]
+        required_keys = ["introduction", "Contexte", "Analyse", "Conclusion"]
         if not any(result.get(k) for k in required_keys):
             raise ValueError("Le JSON ne contient pas les champs attendus.")
-        if not result.get("Analyse") or not result.get("exercice"):
+        if not result.get("Analyse"):
             raise ValueError(
-                "Réponse Mistral incomplète : champs Analyse et/ou exercice vides "
+                "Réponse Mistral incomplète : champ Analyse vide "
                 "(réponse probablement tronquée ou JSON non conforme)."
             )
         return result

@@ -13,6 +13,7 @@ from routers.question  import router as question_router
 from routers.discovering import router as discovering_router
 from routers.auth import router as auth_router
 from routers.microsoft_oauth import router as microsoft_oauth_router
+from routers.challenges import router as challenges_router
 from database import init_db, close_db
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -58,3 +59,4 @@ app.include_router(discovering_router)
 app.include_router(question_router)
 app.include_router(auth_router)
 app.include_router(microsoft_oauth_router)
+app.include_router(challenges_router)

@@ -6,8 +6,10 @@ Opérations directes sur les questions non couvertes par la génération : gesti
 masse de questions depuis un fichier CSV.
 
 Routes sous le préfixe `/questions`. Table : `question` (colonne `dessin` JSONB).
-Remarque : la génération IA des questions est réalisée dans le domaine themes-parcours
-(`mistral/theme_mistral.py`) ; `mistral/question_mistral.py` est un stub vide.
+Remarque : la génération IA des questions de parcours est réalisée dans le domaine
+themes-parcours (`mistral/theme_mistral.py`) ; `mistral/question_mistral.py` charge le
+contexte question/parcours/proposition Discover et génère le JSON des exercices de défi
+(`challenge_framework/generator.py`).
 À ce stade, `id_objet` correspond à `id_question` en base ; l'identifiant est générique
 côté API pour permettre une réutilisation future du dessin sur d'autres entités.
 

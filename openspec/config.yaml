@@ -16,8 +16,7 @@ context: |
   - Langue de génération pilotée par un champ `lang` ("fr" | "en") normalisé via
     `mistral/language_prompts.py` (défaut : français).
   - Les clés JSON techniques et les clés de niveau pyramide restent en snake_case.
-  - Les échecs Mistral renvoient généralement HTTP 502 (sauf /evaluations qui peut
-    renvoyer 200 + chaîne d'erreur — comportement historique).
+  - Les échecs Mistral renvoient généralement HTTP 502.
 
   Les specs de ce dossier décrivent le comportement observable EXISTANT (référence),
   pas un plan d'implémentation.

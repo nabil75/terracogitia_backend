@@ -5,7 +5,7 @@ from typing import Any
 import httpx
 from mistralai.client import Mistral
 
-from .language_prompts import normalize_lang, prompt_prefix
+from .language_prompts import prompt_prefix, prose_formatting_block
 
 
 MISTRAL_CHAT_TIMEOUT_MS = int(os.environ.get("MISTRAL_CHAT_TIMEOUT_MS", str(5 * 60 * 1000)))
@@ -101,8 +101,8 @@ async def call_discover_proposition_json(
     if not api_key:
         raise ValueError("Variable d'environnement MISTRAL_API_KEY manquante ou vide.")
     client = Mistral(api_key=api_key, timeout_ms=MISTRAL_CHAT_TIMEOUT_MS)
-    kw_lang = "English" if normalize_lang(lang) == "en" else "French"
-    prompt = prompt_prefix(lang) + """
+    prompt = prompt_prefix(lang) + prose_formatting_block(lang) + """
+
                     Tu es un expert en """+subtheme+""". Ton objectif est de proposer une réponse à la question suivante : """+question+""". 
                     Ta proposition doit être construite sur la base du plan suivant 
                     1. Introduction : Présente brièvement le sujet et son importance.
@@ -110,25 +110,18 @@ async def call_discover_proposition_json(
                     3. Analyse : Analyse les différents aspects de la question, en mettant en évidence les points clés et les enjeux.
                     4. Conclusion : Résume les points principaux et propose une réponse claire à la question.
                     Ta proposition doit inclure des exemples pertinents pour illustrer tes points.
-                    Pour « Contexte » et « Analyse » : fournis aussi exactement 4 ou 5 mots-clés en """ + kw_lang + """,
-                    concrets et visuels (noms, lieux, objets), utiles pour chercher des photos d’illustration.
-                    Les mots-clés ne doivent PAS apparaître dans le texte des sections Contexte/Analyse.
-                    Après avoir donné ta réponse, tu dois proposer un exercice pour aider à mieux comprendre la question. L'exercice doit être simple et concret, et doit permettre de mettre en pratique les concepts abordés dans ta réponse.
                     IMPORTANT :
                     - Réponds avec du JSON STRICT uniquement.
                     - N'ajoute AUCUN bloc markdown, AUCUN backtick, AUCUN texte avant/après.
                     - Le résultat doit être un OBJET structuré (pas une chaîne).
-                    - Les clés "Analyse" et "exercice" sont OBLIGATOIRES : texte réel, plusieurs phrases chacune, jamais vide ni réduit à "...".
-                    - "contexte_mots_cles" et "analyse_mots_cles" : tableaux de 4 ou 5 chaînes (un mot ou courte expression par entrée).
+                    - La clé "Analyse" est OBLIGATOIRE : texte réel, plusieurs phrases, jamais vide ni réduit à "...".
+                    - Applique les consignes de MISE EN FORME DU TEXTE ci-dessus dans chaque champ (sauts de ligne et listes numérotées).
                     Fournis ta réponse exactement avec ce format JSON :
                     {
                         "introduction": "..........",
                         "Contexte": "..........",
-                        "contexte_mots_cles": ["mot1", "mot2", "mot3", "mot4"],
                         "Analyse": "..........",
-                        "analyse_mots_cles": ["mot1", "mot2", "mot3", "mot4", "mot5"],
-                        "Conclusion": "..........",
-                        "exercice": ".........."
+                        "Conclusion": ".........."
                     }
                     """
     try:

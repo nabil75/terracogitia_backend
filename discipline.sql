@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS discipline (
 -- Lien thème → discipline (peut être NULL pour les thèmes encore non rattachés).
 ALTER TABLE theme
     ADD COLUMN IF NOT EXISTS id_discipline INTEGER
-    REFERENCES discipline(id_discipline) ON DELETE SET NULL;
+    REFERENCES discipline(id_discipline) ON DELETE CASCADE;
 
 -- Index pour accélérer le filtre sur GET /themes/all_themes?id_discipline=...
 CREATE INDEX IF NOT EXISTS idx_theme_id_discipline

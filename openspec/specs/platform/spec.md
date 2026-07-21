@@ -18,7 +18,7 @@ traitement de requête) et SHALL le fermer à l'arrêt, via le hook `lifespan` d
 - WHEN l'application démarre
 - THEN `init_db()` crée le pool asyncpg et exécute les migrations idempotentes
 - AND le répertoire `APP_DATA_DIR/discover_media` est créé
-- AND les routers `theme`, `subthemes`, `discipline`, `discovering`, `question`, `auth`, `microsoft_oauth` sont enregistrés
+- AND les routers `theme`, `subthemes`, `discipline`, `discovering`, `question`, `auth`, `microsoft_oauth`, `challenges` sont enregistrés
 
 #### Scenario: Requête avant initialisation du pool
 - GIVEN le pool de connexions n'est pas initialisé

@@ -7,9 +7,10 @@ de Pexels ; gestion des propositions sauvegardées (une seule « courante » par
 notes, et de l'ordre logique (graphe de prérequis) des questions d'un parcours avec mise en
 cache.
 
-Routes sous le préfixe `/discovering`. Modules : `mistral/discovering_mistral.py`,
-`discover_pexels.py`, `discover_media_storage.py`. Tables : `proposition`
-(`statut_current`, `notes`, `date_creation`), `subtheme.timeline` (cache JSONB).
+Routes sous le préfixe `/discovering`. Modules : `mistral/discovering_mistral.py`
+(avec `prose_formatting_block` de `mistral/language_prompts.py`), `discover_pexels.py`,
+`discover_media_storage.py`. Tables : `proposition` (`statut_current`, `notes`,
+`date_creation`), `subtheme.timeline` (cache JSONB).
 
 ## Requirements
 
@@ -17,7 +18,14 @@ Routes sous le préfixe `/discovering`. Modules : `mistral/discovering_mistral.p
 Le système SHALL exposer
 `GET /discovering/get_proposition_for_question/{question}/{subtheme}` qui génère via Mistral
 une proposition structurée dans la langue demandée (`?lang=fr|en`), enrichie d'images Pexels,
-en exigeant que les sections `Analyse` et `exercice` soient non vides.
+en exigeant que les sections `Analyse` et `exercice` soient non vides, et en injectant dans
+le prompt les consignes de mise en forme (`prose_formatting_block`) : paragraphes séparés par
+ligne vide, énumérations numérotées ligne par ligne, listes à puces avec préfixe `-`.
+
+#### Scenario: Texte structuré pour affichage
+- GIVEN une génération réussie
+- WHEN le client affiche les champs `introduction`, `Contexte`, `Analyse`, `Conclusion`
+- THEN le texte peut contenir des sauts de ligne et des listes numérotées exploitables par le front
 
 #### Scenario: Génération réussie
 - GIVEN `MISTRAL_API_KEY` valide (et éventuellement `PEXELS_API_KEY`)
@@ -68,6 +76,7 @@ insérant la nouvelle proposition comme courante et rétrogradant les autres.
 - GIVEN un identifiant de question et un contenu de proposition
 - WHEN un client envoie `POST /discovering/store_saved_proposition`
 - THEN la réponse est `201`, la nouvelle proposition est `statut_current = true`
+- AND `date_creation` est fixée au moment de l'insertion au format `JJ/MM/AAAA HH:MM`
 - AND toutes les autres propositions de la question passent à `statut_current = false`
 
 #### Scenario: Identifiant ou contenu manquant
@@ -121,10 +130,10 @@ sont pas vides, une proposition vide courante est créée pour les porter.
 
 ### Requirement: Ordre logique des questions (graphe de prérequis)
 Le système SHALL exposer `POST /discovering/ordre_logique_questions` qui calcule ou récupère
-en cache le graphe de prérequis entre les questions d'un parcours, avec un mode `legacy`
-(objet brut par libellés, non persisté sur cache-miss) et un mode enrichi
-(`legacy=false` : vues UI, tri topologique, persistance dans `subtheme.timeline`), et un
-`force_refresh` pour ignorer le cache.
+en cache le graphe de prérequis entre les questions d'un parcours, avec un mode enrichi par
+défaut (`legacy=false` : vues UI, tri topologique, persistance dans `subtheme.timeline`), un
+paramètre `force_refresh` pour ignorer le cache, et un mode `legacy=true` conservé pour
+compatibilité API mais **non consommé** par le client Angular (déprécié).
 
 #### Scenario: Génération enrichie et persistance
 - GIVEN un parcours et sa liste de questions

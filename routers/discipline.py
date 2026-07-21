@@ -12,7 +12,7 @@ Schéma SQL attendu (cf. fix_theme_sequences.sql / migration ajoutée) :
 
     ALTER TABLE theme
         ADD COLUMN IF NOT EXISTS id_discipline INTEGER
-        REFERENCES discipline(id_discipline) ON DELETE SET NULL;
+        REFERENCES discipline(id_discipline) ON DELETE CASCADE;
 """
 
 import json
@@ -654,6 +654,7 @@ async def _count_parcours_for_discipline(discipline_id: int) -> int:
 
 @router.delete("/{disciplineId}", status_code=204)
 # Fait: supprime une discipline si aucun parcours n'y est rattaché.
+# Les thèmes, compétences et prérequis associés sont supprimés en même temps.
 # Entrées: `disciplineId` (int).
 # Retour: `None`.
 async def delete_discipline(disciplineId: int):
@@ -667,10 +668,34 @@ async def delete_discipline(disciplineId: int):
                     "rattaché(s) à cette discipline."
                 ),
             )
-        await database.postgres_delete_query(
-            "DELETE FROM discipline WHERE id_discipline = $1",
-            disciplineId
-        )
+        if database.pool is None:
+            raise HTTPException(
+                status_code=500, detail="Pool base de données non initialisé."
+            )
+        async with database.pool.acquire() as conn:
+            async with conn.transaction():
+                await conn.execute(
+                    "DELETE FROM competence WHERE id_discipline = $1",
+                    disciplineId,
+                )
+                await conn.execute(
+                    "DELETE FROM prerequis WHERE id_discipline = $1",
+                    disciplineId,
+                )
+                await conn.execute(
+                    "DELETE FROM theme WHERE id_discipline = $1",
+                    disciplineId,
+                )
+                deleted = await conn.fetchval(
+                    """
+                    DELETE FROM discipline
+                    WHERE id_discipline = $1
+                    RETURNING id_discipline
+                    """,
+                    disciplineId,
+                )
+                if deleted is None:
+                    raise HTTPException(status_code=404, detail="Discipline introuvable")
     except HTTPException:
         raise
     except Exception as e:

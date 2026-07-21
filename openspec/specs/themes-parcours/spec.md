@@ -6,8 +6,9 @@ parcours et des questions ancrés sur la pyramide des savoirs. Couvre le CRUD ma
 génération IA (parcours + questions) pour un thème existant ou un thème entièrement nouveau,
 le regroupement des questions par familles, et la transcription audio annexe.
 
-Routes sous `/themes` (plus un router `/subthemes`). Tables : `theme`, `subtheme` (parcours),
-`question`. Modules IA : `mistral/theme_mistral.py`, `mistral/pyramid_prompts.py`.
+Routes sous `/themes` (plus un router dédié `/subthemes` pour `PUT /subthemes/{id}` attendu
+par le front). Tables : `theme`, `subtheme` (parcours), `question`. Modules IA :
+`mistral/theme_mistral.py`, `mistral/pyramid_prompts.py`.
 Constantes : type de question IA par défaut `"ouverte"`, min/max parcours par appel
 (`MISTRAL_MIN/MAX_DOMAINES_PER_GENERATION`, défaut 4–5), questions par parcours (défaut 10,
 plage 8–12), maximum 6 familles de regroupement.
